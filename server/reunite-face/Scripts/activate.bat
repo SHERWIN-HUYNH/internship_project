@@ -1,11 +1,11 @@
 @echo off
 
 rem This file is UTF-8 encoded, so we need to update the current code page while executing it
-for /f "tokens=2 delims=:." %%a in ('"%SystemRoot%\System32\chcp.com"') do (
+for /f "tokens=2 delims=:." %%a in ('"C:Windows\System32\chcp.com"') do (
     set _OLD_CODEPAGE=%%a
 )
 if defined _OLD_CODEPAGE (
-    "%SystemRoot%\System32\chcp.com" 65001 > nul
+    "C:Windows\System32\chcp.com" 65001 > nul
 )
 
 set VIRTUAL_ENV=C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\server\reunite-face
@@ -29,6 +29,6 @@ set VIRTUAL_ENV_PROMPT=(reunite-face)
 
 :END
 if defined _OLD_CODEPAGE (
-    "%SystemRoot%\System32\chcp.com" %_OLD_CODEPAGE% > nul
+    "C:Windows\System32\chcp.com" %_OLD_CODEPAGE% > nul
     set _OLD_CODEPAGE=
 )
