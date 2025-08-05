@@ -10,6 +10,7 @@ server/**/__pycache__/
 server/*.py[cod]
 server/*.egg-info/
 server/config.ini
+config.sample.ini
 # Toàn cục
 .DS_Store
 .env
