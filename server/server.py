@@ -1,26 +1,17 @@
-from flask import Flask, jsonify, request
+from flask import Flask
 from flask_cors import CORS
-from utils.mongo import MongoDbClient
-from utils.s3 import S3Client
-import configparser
+from endpoints.accounts import accounts_bp
+from endpoints.images import images_bp
+from endpoints.posts import posts_bp
+from endpoints.exceptions import exceptions_bp
 
 app = Flask(__name__)
+app.register_blueprint(accounts_bp)
+app.register_blueprint(images_bp)
+app.register_blueprint(posts_bp)
+app.register_blueprint(exceptions_bp)
 CORS(app)
 
-@app.route("/index", methods=["GET"])
-def home():
-    return jsonify({"hello": "world"})
-
-def main():
-    config = configparser.RawConfigParser()
-    config.read('./config.ini')
-
-    # test connect s3
-    S3Client(config)
-    # test connect mongo
-    MongoDbClient(config)
-    
-    app.run(host="0.0.0.0", port=8080, debug=True)
 
 if __name__ == "__main__":
-    main()
+    app.run(host="0.0.0.0", port=8080, debug=True)
