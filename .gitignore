@@ -1,3 +1,15 @@
-/server/reunite-face/
-/client/reunite-face/node_modules
+# Node.js (client)
+client/reunite-face/node_modules/
+client/reunite-face/.next/
 
+# Python virtualenv (server)
+/server/reunite-face/
+server/.venv/
+server/env/
+server/**/__pycache__/
+server/*.py[cod]
+server/*.egg-info/
+server/config.ini
+# Toàn cục
+.DS_Store
+.env
