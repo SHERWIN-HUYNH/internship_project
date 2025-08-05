@@ -6,6 +6,7 @@ client/reunite-face/.next/
 /server/reunite-face/
 server/.venv/
 server/env/
+server/reunite-face/
 server/**/__pycache__/
 server/*.py[cod]
 server/*.egg-info/
