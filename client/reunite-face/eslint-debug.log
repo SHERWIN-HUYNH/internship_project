@@ -1,0 +1,28 @@
+2025-08-05T03:45:42.683Z eslint:cli CLI args: [ '.', '--debug' ]
+2025-08-05T03:45:42.688Z eslint:cli Using flat config? true
+2025-08-05T03:45:42.693Z eslint:cli Running on files
+2025-08-05T03:45:42.697Z eslint:flat-eslint Searching for eslint.config.js
+2025-08-05T03:45:42.699Z eslint:flat-eslint Loading config from C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\client\reunite-face\eslint.config.mjs
+2025-08-05T03:45:42.699Z eslint:flat-eslint Config file URL is file:///C:/Users/USER/OneDrive/Documents/HK2-2024-2025/THUC%20TAP/intership_project/client/reunite-face/eslint.config.mjs
+
+Oops! Something went wrong! :(
+
+ESLint: 8.57.1
+
+file:///C:/Users/USER/OneDrive/Documents/HK2-2024-2025/THUC%20TAP/intership_project/client/reunite-face/eslint.config.mjs?mtime=1754365226593:4
+import { rules } from "eslint-plugin-react";
+         ^^^^^
+SyntaxError: Named export 'rules' not found. The requested module 'eslint-plugin-react' is a CommonJS module, which may not support all module.exports as named exports.
+CommonJS modules can always be imported via the default export, for example using:
+
+import pkg from 'eslint-plugin-react';
+const { rules } = pkg;
+
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:171:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:254:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:482:26)
+    at async loadFlatConfigFile (C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\client\reunite-face\node_modules\.pnpm\eslint@8.57.1\node_modules\eslint\lib\eslint\flat-eslint.js:303:21)
+    at async calculateConfigArray (C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\client\reunite-face\node_modules\.pnpm\eslint@8.57.1\node_modules\eslint\lib\eslint\flat-eslint.js:382:28)
+    at async FlatESLint.lintFiles (C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\client\reunite-face\node_modules\.pnpm\eslint@8.57.1\node_modules\eslint\lib\eslint\flat-eslint.js:762:25)
+    at async Object.execute (C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\client\reunite-face\node_modules\.pnpm\eslint@8.57.1\node_modules\eslint\lib\cli.js:421:23)
+    at async main (C:\Users\USER\OneDrive\Documents\HK2-2024-2025\THUC TAP\intership_project\client\reunite-face\node_modules\.pnpm\eslint@8.57.1\node_modules\eslint\bin\eslint.js:152:22)
