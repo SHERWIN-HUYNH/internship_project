@@ -2,6 +2,7 @@
 import React from 'react'
 // import { useSession } from 'next-auth/react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 
 function Header() {
@@ -25,7 +26,7 @@ function Header() {
             
             <div className="flex items-center space-x-4">
                 <button className="hidden md:block bg-indigo-700 hover:bg-primary text-white px-5 py-3 rounded-lg transition">
-                    Đăng nhập
+                    <Link href="/login">Đăng nhập</Link>
                 </button>
                 <button className="md:hidden text-black">
                     <i className="fas fa-bars text-xl"></i>

@@ -1,0 +1,5 @@
+export const INPUT_REQUIRED = 'Trường này là bắt buộc'
+export const NAME_FACULTY_LENGTH = 'Tên chuyên khoa không được quá 50 ký tự'
+export const IMAGE_FACULTY_REQUIRED = 'Vui lòng chọn ảnh chuyên khoa'
+export const DESCRIPTION_LENGTH = 'Mô tả chỉ được phép tối đa 500 ký tự.'
+export const INVALID_IMAGE_FACULTY = 'Vui lòng chọn file ảnh hợp lệ (JPEG, PNG, JPG)'

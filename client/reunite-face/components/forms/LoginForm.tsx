@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form } from '@/components/ui/form'
-import { UserLogin } from '@/lib/validation'
+import {LoginSchema } from '@/validation/login'
 import 'react-phone-number-input/style.css'
 import CustomFormField, { FormFieldType } from '../CustomFormField'
 import SubmitButton from '../SubmitButton'
@@ -20,8 +20,8 @@ export const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
   const { data: session } = useSession()
-  const form = useForm<z.infer<typeof UserLogin>>({
-    resolver: zodResolver(UserLogin),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
       password: '',
@@ -35,7 +35,7 @@ export const LoginForm = () => {
       router.push('/admin')
     }
   }, [session, router])
-  const onSubmit = async (values: z.infer<typeof UserLogin>) => {
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     setIsLoading(true)
     try {
       const res = await signIn('credentials', {
@@ -71,7 +71,7 @@ export const LoginForm = () => {
           iconSrc="/assets/icons/user.svg"
           iconAlt="user"
         />
-        <div className="space-y-2 flex-1 mt-2">
+        <div className="space-y-2 flex-1 mt-2 ">
           <Label htmlFor="current_password" className="shad-input-label ">
             Mật khẩu
           </Label>
