@@ -1,0 +1,7 @@
+export const APPOINTMENT_NOT_FOUND = 'Không tìm thấy lịch hẹn'
+export const INVALID_CANCEL_APPOINTMENT = 'Lịch khám đã hoàn thành hoặc đã bị hủy'
+export const GET_APPOINTMENT_ERROR = 'Lỗi khi lấy danh sách lịch khám'
+export const LACK_APPOINTMENT_INFO = 'Thiếu thông tin đặt khám'
+export const CREATE_APPOINMENT_FAIL = 'Tạo lịch hẹn thất bại'
+export const CREATE_APPOINMENT_SUCCESS = 'Tạo lịch hẹn thành công'
+export const CONFRIM_BOOKED_APPOINTMENT = 'Xác nhận tạo lịch hẹn thành công'
