@@ -27,15 +27,17 @@ class MongoDbClient:
         except errors.ServerSelectionTimeoutError as e:
             self.logger.exception(f'Could not connect to mongo')
 
-    def add_account(self, full_name, email, password, is_admin=False):
+    def add_account(self, full_name, email, password,phone_number, is_admin=False):
         assert isinstance(full_name, str), 'full_name not str'
         assert isinstance(email, str), 'email not str'
         assert isinstance(password, str), 'password not str'
+        assert isinstance(phone_number, str), 'phone_number phải là str'
 
         return self.accounts.insert_one({
             '_id': hashing(email),
             'full_name': full_name,
             'email': email,
             'password': hashing('password'),
+             'phone_number': phone_number,
             'role': 'user' if not is_admin else 'admin'
         })
