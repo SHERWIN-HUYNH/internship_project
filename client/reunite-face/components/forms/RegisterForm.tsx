@@ -34,7 +34,7 @@ export const RegisterForm = () => {
       if (!currentPassword) {
         throw new Error('Password is required')
       }
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('http://localhost:8080/api/auth/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ export const RegisterForm = () => {
         body: JSON.stringify({
           email: values.email,
           password: currentPassword,
-          username: values.username,
+          name: values.username,
           phone: values.phone,
         }),
       })
@@ -51,9 +51,9 @@ export const RegisterForm = () => {
       if (!res.ok) {
         throw new Error(responseData.error)
       }
-
+      // We will redirect to responsive pages based on their role, but now just to home page for testing
       toast.success('Registered successfully')
-      router.push('/login')
+      router.push('/')
     } catch (error) {
       if (error instanceof Error) {
         console.log('ERROR HAPPEN')
