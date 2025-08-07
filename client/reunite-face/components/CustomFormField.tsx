@@ -13,6 +13,7 @@ import { Input } from './ui/input'
 import { Select, SelectContent, SelectTrigger, SelectValue } from './ui/select'
 import { Textarea } from './ui/textarea'
 import React from 'react'
+import { PasswordInput } from './PasswordInput'
 
 
 export enum FormFieldType {
@@ -149,6 +150,18 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       )
     case FormFieldType.SKELETON:
       return props.renderSkeleton ? props.renderSkeleton(field) : null
+    
+    case FormFieldType.PASSWORD:
+      return (
+        <div className="flex overflow-hidden">
+          {/* You can add an icon here if needed */}
+          <PasswordInput
+            placeholder={props.placeholder}
+            {...field} // This spreads the react-hook-form field props (value, onChange, onBlur
+    
+          />
+        </div>
+      );
 
     default:
       return null
