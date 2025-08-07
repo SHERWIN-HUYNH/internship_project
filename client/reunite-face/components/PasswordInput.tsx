@@ -16,7 +16,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, PasswordInputProps>(
     const disabled = value === '' || value === undefined || field.disabled
 
     return (
-      <div className="relative">
+      <div className="relative w-full  bg-white border border-dark-500 rounded-md">
         <Input
           type={showPassword ? 'text' : 'password'}
           className={`hide-password-toggle pr-10 ${className}`}

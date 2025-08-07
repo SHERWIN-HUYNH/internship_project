@@ -1,7 +1,11 @@
 from pymongo import MongoClient, errors
 import logging
 import configparser
-import os
+import hashlib
+
+def hashing(input):
+    assert isinstance(input, str), 'Can not hash, input is not string'
+    return hashlib.sha256(input.encode()).hexdigest()
 
 class MongoDbClient:
     def __init__(self):
@@ -26,6 +30,19 @@ class MongoDbClient:
             self.images = self.db["images"]
             self.posts = self.db["posts"]
         except errors.ServerSelectionTimeoutError as e:
-            self.logger.exception(f"Could not connect to mongo")
+            self.logger.exception(f'Could not connect to mongo')
 
-mongo_client = MongoDbClient()
+    def add_account(self, full_name, email, password,phone_number, is_admin=False):
+        assert isinstance(full_name, str), 'full_name not str'
+        assert isinstance(email, str), 'email not str'
+        assert isinstance(password, str), 'password not str'
+        assert isinstance(phone_number, str), 'phone_number phải là str'
+
+        return self.accounts.insert_one({
+            '_id': hashing(email),
+            'full_name': full_name,
+            'email': email,
+            'password': hashing('password'),
+             'phone_number': phone_number,
+            'role': 'user' if not is_admin else 'admin'
+        })
