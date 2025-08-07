@@ -6,52 +6,60 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Form } from '@/components/ui/form'
-import { UserLogin } from '@/lib/validation'
+import {LoginSchema } from '@/validation/login'
 import 'react-phone-number-input/style.css'
 import CustomFormField, { FormFieldType } from '../CustomFormField'
 import SubmitButton from '../SubmitButton'
-import { toast } from 'sonner'
 import { PasswordInput } from '../PasswordInput'
 import { Label } from '../ui/label'
-import { signIn, useSession } from 'next-auth/react'
 import React from 'react'
+import { serialize } from 'cookie'
 export const LoginForm = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
-  const { data: session } = useSession()
-  const form = useForm<z.infer<typeof UserLogin>>({
-    resolver: zodResolver(UserLogin),
+  const form = useForm<z.infer<typeof LoginSchema>>({
+    resolver: zodResolver(LoginSchema),
     defaultValues: {
-      email: '',
-      password: '',
+      email: ''
     },
   })
-  useEffect(() => {
-    if (session?.user.roleName === 'USER') {
-      router.push('/')
-    }
-    if (session?.user.roleName === 'ADMIN') {
-      router.push('/admin')
-    }
-  }, [session, router])
-  const onSubmit = async (values: z.infer<typeof UserLogin>) => {
+  
+  const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
+    console.log(form.formState.errors)
+    console.log('IS LOADING', isLoading)
     setIsLoading(true)
     try {
-      const res = await signIn('credentials', {
-        email: values.email,
-        password: currentPassword,
-        redirect: false,
-      })
-      if (res?.error) {
-        toast.error(res.error)
+      console.log('VALUES FROM REGISTER', values)
+      if (!currentPassword) {
+        throw new Error('Password is required')
       }
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: values.email,
+          password: currentPassword,
+        }),
+      })
+      const responseData = await res.json()
+      if (!res.ok) {
+        throw new Error(responseData.error)
+      }
+      // Redirect to home if login successfully
+      router.push('/')
+
     } catch (error) {
       console.log(error)
     } finally {
       setIsLoading(false)
     }
   }
+  console.log(form.formState.errors)
+  console.log(isLoading)
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
@@ -71,7 +79,7 @@ export const LoginForm = () => {
           iconSrc="/assets/icons/user.svg"
           iconAlt="user"
         />
-        <div className="space-y-2 flex-1 mt-2">
+        <div className="space-y-2 flex-1 mt-2 ">
           <Label htmlFor="current_password" className="shad-input-label ">
             Mật khẩu
           </Label>
@@ -82,6 +90,13 @@ export const LoginForm = () => {
             autoComplete="current-password"
           />
         </div>
+         {/* <CustomFormField
+          fieldType={FormFieldType.PASSWORD} // Create a new field type for password
+          control={form.control}
+          name="password"
+          label="Mật khẩu"
+          placeholder="Mật khẩu"
+        /> */}
 
         <SubmitButton isLoading={isLoading}>Đăng nhập</SubmitButton>
       </form>
