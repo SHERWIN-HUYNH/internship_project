@@ -18,7 +18,7 @@ function Header() {
             
             <nav className="hidden md:flex space-x-10">
                 <a href="#" className="text-xl text-indigo-800 hover:text-primary font-medium">Home</a>
-                <a href="#" className="text-xl text-black hover:text-primary">Report missing</a>
+                <Link href="/missingreport" className="text-xl text-black hover:text-primary">Report missing</Link>
                 <a href="#" className="text-xl text-black hover:text-primary">Resources</a>
                 <a href="#" className="text-xl text-black hover:text-primary">About</a>
                 <a href="#" className="text-xl text-black hover:text-primary">Contact</a>
