@@ -4,28 +4,31 @@ import boto3
 import configparser
 import os
 
+from dotenv import load_dotenv
+load_dotenv()
 
 class S3Client:
     def __init__(self):
-        config = configparser.RawConfigParser()
-        config.read(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "config.ini")
-        )
+        
 
         self.logger = logging.getLogger("s3Client")
         self.logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler()
-        handler.setFormatter(logging.Formatter(config["logging"]["formatter"]))
-        self.logger.addHandler(handler)
+        if not self.logger.handlers:
+            handler = logging.StreamHandler()
+            formatter = logging.Formatter(
+                "%(asctime)s %(name)s [%(levelname)s]: %(message)s"
+            )
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
 
         try:
             self.client = boto3.client(
                 service_name="s3",
-                region_name=config["s3"]["aws_region"],
-                aws_access_key_id=config["s3"]["aws_access_key"],
-                aws_secret_access_key=config["s3"]["aws_secret_access_key"],
+                region_name=os.getenv["aws_region"],
+                aws_access_key_id=os.getenv["aws_access_key"],
+                aws_secret_access_key=os.getenv["aws_secret_access_key"],
             )
-            self.bucket_name = config["s3"]["aws_bucket_name"]
+            self.bucket_name = os.getenv["aws_bucket_name"]
             self.logger.info("S3 connect successfully")
         except Exception as e:
             self.logger.exception("S3 connect failed")
