@@ -76,6 +76,36 @@ const ListPeople = () => {
             imageUrl="/assets/images/missing_people/person1.png"
             missing_since={"Missing since: Jun 15, 2023"}
           />
+          <PersonCard
+            name="Sarah Johnson"
+            age={16}
+            gender="Female"
+            lastSeen="Seattle, WA"
+            dateMissing="Jun 15, 2023"
+            description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
+            imageUrl="/assets/images/missing_people/person1.png"
+            missing_since={"Missing since: Jun 15, 2023"}
+          />
+          <PersonCard
+            name="Sarah Johnson"
+            age={16}
+            gender="Female"
+            lastSeen="Seattle, WA"
+            dateMissing="Jun 15, 2023"
+            description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
+            imageUrl="/assets/images/missing_people/person1.png"
+            missing_since={"Missing since: Jun 15, 2023"}
+          />
+          <PersonCard
+            name="Sarah Johnson"
+            age={16}
+            gender="Female"
+            lastSeen="Seattle, WA"
+            dateMissing="Jun 15, 2023"
+            description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
+            imageUrl="/assets/images/missing_people/person1.png"
+            missing_since={"Missing since: Jun 15, 2023"}
+          />
         </div>
         
     </div>
