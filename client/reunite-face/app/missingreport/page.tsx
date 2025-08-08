@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react';
+import { ChangeEvent, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation'
 import { ArrowBigLeft } from 'lucide-react';
@@ -16,10 +16,13 @@ interface MissingPersonFormData {
   address: string;
   contact_info: string;
   status: 'finding' | 'found';
+  images: File[]
 }
 
 const MissingPersonForm: NextPage = () => {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<MissingPersonFormData>({
     name: '',
     gender: '',
@@ -29,7 +32,8 @@ const MissingPersonForm: NextPage = () => {
     relationship: '',
     address: '',
     contact_info: '',
-    status: 'finding'
+    status: 'finding',
+    images:[]
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -41,6 +45,35 @@ const MissingPersonForm: NextPage = () => {
     e.preventDefault();
     console.log(formData);
   };
+   // Handle image selection
+  // Adding new uploads
+const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  if (!e.target.files) return;
+  const files = Array.from(e.target.files);  // File[]
+console.log('FILES', files) 
+  setFormData(prev => ({
+    ...prev,
+    images: [...prev.images, ...files],
+  }));
+
+  const newPreviews = files.map(f => URL.createObjectURL(f));
+  setPreviewImages(prev => [...prev, ...newPreviews]);
+};
+
+// Removing an image by index
+const removeImage = (index: number) => {
+  setFormData(prev => {
+    const imgs = [...prev.images];
+    imgs.splice(index, 1);
+    return { ...prev, images: imgs };
+  });
+
+  setPreviewImages(prev => {
+    const pr = [...prev];
+    pr.splice(index, 1);
+    return pr;
+  });
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8 relative">
@@ -209,7 +242,65 @@ const MissingPersonForm: NextPage = () => {
             />
           </div>
 
-          
+          {/* Image Upload Section */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Upload Photos (Multiple allowed)
+            </label>
+            
+            {/* Hidden file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              multiple
+              accept="image/*"
+              className="hidden"
+            />
+            
+            {/* Custom upload area */}
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-indigo-500 transition-colors"
+            >
+              <div className="flex flex-col items-center justify-center space-y-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <p className="text-gray-600">Click to upload or drag and drop</p>
+                <p className="text-xs text-gray-500">JPEG, PNG (Max 5MB each)</p>
+              </div>
+            </div>
+          </div>
+          {/* Image Previews */}
+            {previewImages.length > 0 && (
+              <div className="mt-4">
+                <h4 className="text-sm font-medium text-gray-700 mb-2">Selected Photos ({previewImages.length})</h4>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {previewImages.map((preview, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={preview}
+                        alt={`Upload preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-md border border-gray-200"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          removeImage(index);
+                        }}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           {/* Submit Buttons */}
           <div className="flex justify-end gap-4 pt-8">
             <button
@@ -223,7 +314,8 @@ const MissingPersonForm: NextPage = () => {
                 relationship: '',
                 address: '',
                 contact_info: '',
-                status: 'finding'
+                status: 'finding',
+                images: []
               })}
               className="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
             >
@@ -249,6 +341,7 @@ const MissingPersonForm: NextPage = () => {
             All information provided will be treated with confidentiality and used solely for reuniting missing persons with their loved ones.
           </p>
         </div>
+
       </div>
     </div>
     
