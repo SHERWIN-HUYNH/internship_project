@@ -11,6 +11,9 @@
     height: 0px;
     border-radius: 0px;
   }
+  .body-width {
+    @apply max-w-[1180px] px-0;
+  }
 
   .remove-scrollbar::-webkit-scrollbar-track {
     background: transparent;
