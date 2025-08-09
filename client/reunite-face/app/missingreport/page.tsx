@@ -87,7 +87,6 @@ const removeImage = (index: number) => {
       </button>
 
       {/* Hero Section */}
-      
 
       {/* Floating Form Container */}
       <div className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
