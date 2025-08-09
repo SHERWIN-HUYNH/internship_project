@@ -39,9 +39,9 @@ class AuthService:
             "sub":  data["email"],
             "role": "user",
             "iat":  datetime.datetime.utcnow(),
-            "exp":  datetime.datetime.utcnow() + datetime.timedelta(seconds=Config.JWT_EXP_SEC)
+            "exp":  datetime.datetime.utcnow() + datetime.timedelta(seconds=Config.JWT_ACCESS_EXPIRES)
         }
-        token = jwt.encode(payload, Config.JWT_SECRET, algorithm=Config.JWT_ALGO)
+        token = jwt.encode(payload, Config.JWT_SECRET_KEY, algorithm=Config.JWT_ALGORITHM)
 
         return {"user_id": user_id, "token": token}
 
@@ -72,11 +72,11 @@ class AuthService:
             "sub":  user["email"],
             "role": user.get("role", "user"),
             "iat":  datetime.datetime.utcnow(),
-            "exp":  datetime.datetime.utcnow() + datetime.timedelta(seconds=Config.JWT_EXP_SEC)
+            "exp":  datetime.datetime.utcnow() + datetime.timedelta(seconds=Config.JWT_ACCESS_EXPIRES)
         }
 
         # 5. Encode token
-        token = jwt.encode(payload, Config.JWT_SECRET, algorithm=Config.JWT_ALGO)
+        token = jwt.encode(payload, Config.JWT_SECRET_KEY, algorithm=Config.JWT_ALGORITHM)
 
         # 6. Return user identifier and token
         return {
