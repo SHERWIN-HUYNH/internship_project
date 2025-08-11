@@ -19,7 +19,9 @@ def _set_auth_cookie(response, token: str):
     )
     return response
 
-@auth_bp.route('/signup', methods=['POST'])
+auth_bp = Blueprint('auth', __name__)
+
+@auth_bp.post('/signup')
 def signup():
     json_data = request.get_json() or {}
     try:

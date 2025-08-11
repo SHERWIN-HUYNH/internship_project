@@ -37,7 +37,7 @@ class PostsServices:
         return [str(p['_id']) for p in posts]
 
 
-    def get_similar_posts_to_img(self, file_name: str, stream: BytesIO, threshold=1.8):
+    def get_similar_posts_to_img(self, file_name: str, stream: BytesIO, threshold=1):
         img = img_to_embedding(stream)
         if img is None:
             raise DetectFaceError(file_name)

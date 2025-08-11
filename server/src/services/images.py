@@ -41,7 +41,7 @@ class ImagesServices:
 
 
     def upload_image(
-        self, file_name: str, stream: BytesIO, post_id: str, threshold: float= 1.6
+        self, file_name: str, stream: BytesIO, post_id: str, threshold: float= 1.5
     ):
         # get embeds of imgs
         img = img_to_embedding(stream)
@@ -85,12 +85,6 @@ class ImagesServices:
                     ]
                 }
             ]
-
-            pipeline[0]['$match'] = {'post_id': {'$ne': ObjectId(post_id)}}
-            imgs = self.images.aggregate(pipeline).to_list()
-
-            if any(map(lambda i: i['l2_score'] < threshold, get_score_of_img_to_imgs(img_embed=img, other_imgs_embed=imgs))):
-                raise ImageIdentityError(f'{file_name} existed')
 
             pipeline[0]['$match'] = {'post_id':  ObjectId(post_id)}
             imgs = self.images.aggregate(pipeline).to_list()

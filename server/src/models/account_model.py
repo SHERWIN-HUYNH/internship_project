@@ -2,7 +2,8 @@ import bcrypt
 from flask import current_app
 from pymongo.errors import DuplicateKeyError
 from bson.objectid import ObjectId
-from utils.mongo import mongo_client
+from ..utils.mongo import mongo_client
+
 class UserModel:
    
     def __init__(self, email: str, password_hash: str, name: str = None, phone: str = None, role: bool = False):

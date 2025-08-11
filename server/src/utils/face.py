@@ -20,6 +20,7 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+
 class FaceDetect:
     def __init__(self, target_size=(160, 160)):
         self.target_size = target_size
@@ -28,7 +29,10 @@ class FaceDetect:
 
 
     def extract_face(self, img: np.ndarray) -> np.ndarray:
-        faces = self.detector.detect_faces(img)
+        try:
+            faces = self.detector.detect_faces(img)
+        except Exception:
+            return None
         if len(faces) != 1:
             return None
 
@@ -55,52 +59,17 @@ face_detect = FaceDetect()
 face_verify = FaceVerify()
 
 
-def enhance_image(img):
-    # Increase sharpness
-    sharpness = ImageEnhance.Sharpness(img)
-    img_ = sharpness.enhance(2.0)  # 1.0 = original, >1 = sharper
-
-    # Increase contrast
-    contrast = ImageEnhance.Contrast(img_)
-    img_ = contrast.enhance(1.5)
-
-    # gray img
-    if len(np.array(img_).shape) == 2:
-        img_ = cv.cvtColor(np.array(img_), cv.COLOR_GRAY2RGB)
-
-    img_ = cv.fastNlMeansDenoisingColored(
-        np.array(img_),
-        None,
-        h=3,         # smaller value = lighter denoising
-        hColor=3,    # smaller value = keep more color details
-        templateWindowSize=7,
-        searchWindowSize=21
-    )
-    return img_
-
-
 def img_to_embedding(stream: BytesIO) -> np.ndarray:
-    img = Image.open(stream)
-    enhanced_img = enhance_image(img)
-    face = face_detect.extract_face(enhanced_img)
+    try:
+        img = np.array(Image.open(stream))
+        face = face_detect.extract_face(img)
+    except ValueError as e:
+        logger.exception('Face extraction error')
+        return None
+    except OSError as e:
+        logger.exception('Face extraction error')
+        return None
     return face if face is None else face_verify.get_embedding(face)
-
-
-# Global variables for workers
-_embedding_shape = None
-_embedding_dtype = None
-_embedding_shm = None
-
-
-def _init_worker(shm_name, shape, dtype):
-    """Initialize worker with access to the shared embedding array."""
-    global _embedding_shm, _embedding_shape, _embedding_dtype, _embedding
-
-    _embedding_shape = shape
-    _embedding_dtype = np.dtype(dtype)
-    _embedding_shm = shared_memory.SharedMemory(name=shm_name)
-
-    _embedding = np.ndarray(shape, dtype=np.dtype(dtype), buffer=_embedding_shm.buf)
 
 
 def _get_sim_score_of_embed(img_dict):
@@ -111,18 +80,9 @@ def _get_sim_score_of_embed(img_dict):
     
 
 def get_score_of_img_to_imgs(img_embed: np.ndarray, other_imgs_embed: list[dict]):
-    # shm = shared_memory.SharedMemory(create=True, size=img_embed.nbytes)
-    # shm_arr = np.ndarray(img_embed.shape, dtype=img_embed.dtype, buffer=shm.buf)
-    # shm_arr[:] = img_embed[:]
     global _embedding
     _embedding = img_embed
 
-    # with ProcessPoolExecutor(initializer=_init_worker, initargs=(shm.name, img_embed.shape, img_embed.dtype.str)) as executor:
-        # get the rest imgs
-        # l2_imgs_score = list(executor.map(_get_sim_score_of_embed, other_imgs_embed))
     l2_imgs_score = list(map(_get_sim_score_of_embed, other_imgs_embed))
-    # shm.close()
-    # shm.unlink()
-    logger.info(f'l2 score\n{l2_imgs_score}')
     return sorted(l2_imgs_score, key=lambda i: i['l2_score'])
 
