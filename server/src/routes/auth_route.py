@@ -1,10 +1,11 @@
-from flask import request, jsonify
+from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token
 from ..services.auth import AuthService
-from . import auth_bp
 from ..models.account_model import UserModel
 
-@auth_bp.route('/signup', methods=['POST'])
+auth_bp = Blueprint('auth', __name__)
+
+@auth_bp.post('/signup')
 def signup():
     json_data = request.get_json() or {}
     try:
@@ -22,7 +23,7 @@ def signup():
         "token": result["token"]
     }), 201
     
-@auth_bp.route('/login', methods=['POST'])
+@auth_bp.post('/login')
 def login():
     """
     User Login Route.

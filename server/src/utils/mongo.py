@@ -24,7 +24,7 @@ class MongoDbClient:
             self.logger.addHandler(handler)
 
         # Get connection string
-        uri = os.getenv("MONGODB_URI")
+        uri = os.getenv("MONGO_URI")
         if not uri:
             raise RuntimeError("MONGODB_URI not found in environment variables")
 
@@ -37,8 +37,11 @@ class MongoDbClient:
                 socketTimeoutMS=20000,
                 tlsAllowInvalidCertificates=True  # For development
             )
+            self.client.server_info()
+            self.logger.info("MongoDB connect successfully")
 
-            self.db       = self.client["reunite_face"]
+            # self.db       = self.client["reunite_face"]
+            self.db       = self.client["persons_db"]
             self.accounts = self.db["accounts"]
             self.images   = self.db["images"]
             self.posts    = self.db["posts"]
@@ -46,29 +49,6 @@ class MongoDbClient:
         except errors.ServerSelectionTimeoutError as e:
             self.logger.exception("Could not connect to MongoDB")
             raise
-    def connect(self, config):
-        """Connect to the MongoDB server."""
-        mongo_uri = config['MONGODB_URI']
-        self.client = MongoClient(mongo_uri)
-        self.db = self.client.get_database() # Assuming a default database
-    def get_collection(self, collection_name):
-        """Get a specific collection"""
-        return self.db[collection_name]
-    def get_db(self):
-        """Get the database instance."""
-        return self.db
-    def close_connection(self):
-        """Close MongoDB connection"""
-        if self.client:
-            self.client.close()
-            self.logger.info("MongoDB connection closed")
 
-    def is_connected(self) -> bool:
-        """Return True if MongoDB responds to ping."""
-        try:
-            self.client.admin.command("ping")
-            return True
-        except errors.PyMongoError:
-            return False
     
 mongo_client = MongoDbClient()

@@ -1,11 +1,8 @@
-import os, hashlib
-from datetime import timedelta
+import hashlib
 import bcrypt
-from pymongo import MongoClient, errors
 from dotenv import load_dotenv
 from src.config import Config
 import jwt, datetime
-from marshmallow import ValidationError
 from src.models.account_model import UserModel
 from src.schema.login_schema import LoginSchema
 from src.schema.user import SignupSchema
