@@ -1,14 +1,11 @@
 # Node.js (client)
-client/reunite-face/node_modules/
-client/reunite-face/.next/
-client/reunite-face/.env
+client/*
 # Python virtualenv (server)
 /server/reunite-face/
 server/.venv/
 server/env/
-server/__pycache__/
-server/utils/__pycache__/
-server/**/__pycache__/
+server/__pycache__/*
+server/**/__pycache__/*
 server/*.py[cod]
 server/*.egg-info/
 server/config.ini
