@@ -5,7 +5,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 
-function Header() {
+const  Header = (props: {
+  sidebarOpen: string | boolean | undefined
+  setSidebarOpen: (arg0: boolean) => void
+})=> {
 //   const { data: session } = useSession()
 
   return (
