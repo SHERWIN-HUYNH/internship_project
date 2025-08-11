@@ -58,11 +58,6 @@ def exceptions_register(app):
         return jsonify({"error": e.message}), e.status_code
 
 
-    @app.errorhandler(ImageIdentityError)
-    def handle_failed_upload_image(e):
-        return jsonify({"error": e.message}), e.status_code
-
-
     @app.errorhandler(Exception)
     def handle_invalid_field_type(e):
         return jsonify({"error": str(e)}), 400

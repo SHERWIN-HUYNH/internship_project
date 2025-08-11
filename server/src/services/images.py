@@ -1,6 +1,6 @@
 from ..utils.mongo import mongo_client
 from ..utils.face import get_score_of_img_to_imgs
-from ..utils.exceptions import ImageUploadFailed, DetectFaceError, ImageIdentityError
+from ..utils.exceptions import ImageUploadFailed, DetectFaceError, DifferentImageIdentityError
 from ..utils.face import img_to_embedding
 from ..utils.s3 import s3_client
 from bson import ObjectId
@@ -90,7 +90,7 @@ class ImagesServices:
             imgs = self.images.aggregate(pipeline).to_list()
 
             if any(map(lambda i: i['l2_score'] > threshold, get_score_of_img_to_imgs(img_embed=img, other_imgs_embed=imgs))):
-                raise ImageIdentityError(f'{file_name} different from other in the same post')
+                raise DifferentImageIdentityError(file_name)
 
         # store embed in db
         img_id = self.images.insert_one(

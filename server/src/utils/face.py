@@ -2,9 +2,7 @@ import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from mtcnn.mtcnn import MTCNN
 from keras_facenet import FaceNet
-from PIL import Image, ImageEnhance
-from concurrent.futures import ProcessPoolExecutor
-from multiprocessing import shared_memory
+from PIL import Image
 from io import BytesIO
 import cv2 as cv
 import numpy as np
@@ -73,6 +71,7 @@ def img_to_embedding(stream: BytesIO) -> np.ndarray:
 
 
 def _get_sim_score_of_embed(img_dict):
+    global _embedding
     img_embed = np.array(img_dict.pop('feature'), dtype=np.float32)    
     # measure_embeddings_similarity
     img_dict['l2_score'] = float(np.sum((img_embed - _embedding)**2))
