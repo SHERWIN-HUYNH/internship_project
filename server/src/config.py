@@ -9,6 +9,7 @@ load_dotenv()
 class Config:
     """Base configuration."""
     MONGODB_URI = os.getenv('MONGODB_URI')
+    ENV = os.getenv('ENV')
     JWT_SECRET_KEY  = os.getenv("JWT_SECRET_KEY")
     JWT_ALGORITHM     = os.getenv("JWT_ALGORITHM")
     JWT_ACCESS_EXPIRES  = int(os.getenv("JWT_ACCESS_EXPIRES", "3600"))

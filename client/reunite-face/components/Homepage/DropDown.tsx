@@ -1,35 +1,31 @@
 'use client'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
 import ClickOutside from '@/components/ClickOutside'
 import { signOut, useSession } from 'next-auth/react'
 import { BookPlus, CreditCard, LogOut, SquareUser } from 'lucide-react'
+import { useAuth } from '@/context/authContext'
 const Dropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  // const { data: session } = useSession()
-
-  const session = {
-  user: {
-    id: '123',
-    name: 'TRUNG',
-    email: 'trung@123',
-    image: '123asd',
-    roleName: 'user'
-  }
-  } 
-    
-
+   const { user, loading } = useAuth()
+   useEffect(() => {
+     console.log(dropdownOpen)
+   },[dropdownOpen])
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
-        onClick={() => setDropdownOpen(!dropdownOpen)}
-        className="flex items-center gap-4"
         href="#"
+        onClick={(e) => {
+          e.preventDefault()
+          setDropdownOpen(!dropdownOpen)
+    }}
+        className="flex items-center gap-4"
+        
       >
         <span className="hidden text-right lg:block">
           <span className="block text-md font-semibold rounded-3xl border px-4 py-2 text-primary border-primary hover:bg-primary hover:text-white transition-all ease-in-out duration-300">
-            {session?.user?.name}
+            {user?.name}
           </span>
         </span>
       </Link>
@@ -40,30 +36,13 @@ const Dropdown = () => {
           <ul className="flex flex-col border-b border-stroke dark:border-strokedark w-full">
             <li className="w-full px-6 py-2">
               Xin chào{' '}
-              <span className="font-semibold text-primary">{session?.user?.name}</span>
+              <span className="font-semibold text-primary">{user?.name}</span>
             </li>
             <hr className="border-slate-200" />
-            <li className="w-full ">
-              <Link
-                href={`/patients/${session?.user?.id}/profile`}
-                className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:bg-slate-100 hover:text-primary dark:hover:bg-strokedark lg:text-base w-full px-6 py-2"
-              >
-                <BookPlus className="h-5 w-5" />
-                Hồ sơ khám bệnh
-              </Link>
-            </li>
+            
             <li className="w-full">
               <Link
-                href={`/patients/${session?.user?.id}/profile?tab=2`}
-                className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:bg-slate-100 hover:text-primary dark:hover:bg-strokedark lg:text-base w-full px-6 py-2"
-              >
-                <CreditCard className="h-5 w-5" />
-                Phiếu khám bệnh
-              </Link>
-            </li>
-            <li className="w-full">
-              <Link
-                href={`/account/${session?.user?.id}`}
+                href={`/account/${user?.email}`}
                 className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:bg-slate-100 hover:text-primary dark:hover:bg-strokedark lg:text-base w-full px-6 py-2"
               >
                 <SquareUser className="h-5 w-5" />
@@ -85,7 +64,7 @@ const Dropdown = () => {
           </button>
         </div>
       )}
-      {/* Dropdown End */}
+  
     </ClickOutside>
   )
 }

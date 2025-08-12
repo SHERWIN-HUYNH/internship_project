@@ -16,8 +16,8 @@ const SearchFiler = ()=> {
                     <div className="flex items-center space-x-4">
                         <Input type="file" accept="image/*" className="hidden" id="image-upload"/>
                         <button
-                            className="flex items-center space-x-2 bg-primary px-2   hover:bg-gray-200 text-gray-800 py-2 rounded-lg border">
-                           <ImageUp className=" text-white" /> <p className=" text-white ">Upload Photo</p>
+                            className="flex items-center space-x-2 bg-primary px-4 py-2 hover:bg-gray-200 text-gray-800 rounded-lg border">
+                           <ImageUp className=" text-white text-md" /> <p className=" text-white text-md ">Upload Photo</p>
                         </button>
                         <div className="flex-1 relative">
                             <Input type="text" placeholder="Or describe the person..." 

@@ -7,13 +7,12 @@ const FLASK_URL = process.env.NEXT_PUBLIC_FLASK_API_URL
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const { email, password,name,phone,role=true } = await request.json()
 
-    // Forward request to Flask
-    const flaskRes = await fetch(`${FLASK_URL}/auth/login`, {
+    const flaskRes = await fetch(`${FLASK_URL}/auth/signup`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password,name,phone }),
     })
     const data = await flaskRes.json()
 
@@ -26,16 +25,14 @@ export async function POST(request: NextRequest) {
 
     const { access_token: token, expires_in = 60 * 60 * 24 * 7 } = data
 
-    // 5. Build Set-Cookie header
     const cookieHeader = serialize('access_token', token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: expires_in,
       path: '/',
     })
 
-    // 6. Return success with cookie
     return NextResponse.json(
       { success: true },
       {
