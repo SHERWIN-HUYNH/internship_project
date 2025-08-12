@@ -144,6 +144,9 @@ const config = {
         14: '0px 2px 3px 0px rgba(0, 0, 0, 0.10)',
       },
       colors: {
+        purple_1:"#190482",
+        purple_2:"#7752FE",
+        purple_4:"#C2D9FF",
         iconGray: '#b1b1b1',
         highlight: '#003553',
         secondaryPriamry: '#3730a3',

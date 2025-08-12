@@ -5,6 +5,10 @@ from .routes.auth_route  import auth_bp
 from .routes.exceptions  import exceptions_register
 from .routes.images import images_bp
 from .routes.posts  import posts_bp
+from utils.mongo import MongoClient, MongoDbClient
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS
+from .routes.auth_route  import auth_bp
 from .config import Config
 
 

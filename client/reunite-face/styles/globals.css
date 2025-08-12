@@ -11,6 +11,9 @@
     height: 0px;
     border-radius: 0px;
   }
+  .body-width {
+    @apply max-w-[1180px] px-0;
+  }
 
   .remove-scrollbar::-webkit-scrollbar-track {
     background: transparent;
@@ -143,7 +146,7 @@
 
   /* ===== ADMIN */
   .admin-header {
-    @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-gradient-to-tr from-[#00b5f1] to-[#00e0ff]  px-[5%] py-5 shadow-lg xl:px-12;
+    @apply sticky top-3 z-20 mx-3 flex items-center justify-between rounded-2xl bg-primary  px-[5%] py-5 shadow-lg xl:px-12;
   }
 
   .admin-main {
@@ -311,7 +314,7 @@
   }
 
   .shad-table-row-header {
-    @apply border-none bg-gradient-to-tr from-[#00b5f1] to-[#00e0ff] text-light-200 hover:bg-transparent !important;
+    @apply border-none bg-primary text-white hover:bg-purple_1 !important;
   }
 
   .shad-table-row {
