@@ -11,6 +11,5 @@ import {
 
 export const LoginSchema = z
   .object({
-    email: z.string().email(INVALID_EMAIL),
-    password: z.string().min(6, PASSWORD_LENGTH),
+    email: z.string().email(INVALID_EMAIL)
   })

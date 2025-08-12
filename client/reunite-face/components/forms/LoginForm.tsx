@@ -13,7 +13,7 @@ import SubmitButton from '../SubmitButton'
 import { PasswordInput } from '../PasswordInput'
 import { Label } from '../ui/label'
 import React from 'react'
-import { serialize } from 'cookie'
+import { toast } from 'sonner'
 export const LoginForm = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -24,6 +24,9 @@ export const LoginForm = () => {
       email: ''
     },
   })
+  useEffect(() => {
+  console.log('Form Errors:', form.formState.errors)
+}, [form.formState.errors])
   
   const onSubmit = async (values: z.infer<typeof LoginSchema>) => {
     console.log(form.formState.errors)
@@ -34,7 +37,7 @@ export const LoginForm = () => {
       if (!currentPassword) {
         throw new Error('Password is required')
       }
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -47,9 +50,11 @@ export const LoginForm = () => {
       })
       const responseData = await res.json()
       if (!res.ok) {
+        console.log('CODE LOI',responseData)
         throw new Error(responseData.error)
       }
       // Redirect to home if login successfully
+      toast.success('Login successfully')
       router.push('/')
 
     } catch (error) {
@@ -58,8 +63,7 @@ export const LoginForm = () => {
       setIsLoading(false)
     }
   }
-  console.log(form.formState.errors)
-  console.log(isLoading)
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
