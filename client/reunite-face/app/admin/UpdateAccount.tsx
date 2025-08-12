@@ -12,16 +12,17 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { Input } from '../ui/input'
-import { PasswordInput } from '../PasswordInput'
-import SubmitButton from '../SubmitButton'
+import { Input } from '@/components/ui/input'
+import { PasswordInput } from '@/components/PasswordInput'
+import SubmitButton from '@/components/SubmitButton'
+import { useSession } from 'next-auth/react'
 import { UpdateAccountValidation } from '@/validation/updateAccount'
-
 import { toast } from 'sonner'
 import { CldImage } from 'next-cloudinary'
 
 const UpdateAccount = () => {
   const [isLoading, setIsLoading] = useState(false)
+  // const [data, setData] = useState<UserUpdate>()
   // const { data: session } = useSession()
   // const [uploadedImage, setUploadedImage] = useState<string | null>(
   //   session?.user.image ?? null,
@@ -33,26 +34,81 @@ const UpdateAccount = () => {
       username:  '',
       email:  '',
       oldPassword: '',
-      phone:  ''
+      phone:  '',
+      image:  '',
     },
   })
 
   const { reset } = form
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    // const file = e.target.files?.[0]
+    // if (!file) return
 
+    // const temporaryUrl = URL.createObjectURL(file)
+    // setUploadedImage(temporaryUrl)
+
+    // try {
+    //   const result = await uploadFileToCloudinary(file)
+    //   if (!result) {
+    //     toast.error('Tải ảnh lên thất bại. Vui lòng thử lại!')
+    //     return
+    //   }
+    //   setUploadedImage(result)
+    // } catch (error) {
+    //   toast.error(error instanceof Error ? error.message : 'Có lỗi xảy ra khi tải ảnh.')
+    // }
   }
-  const onSubmit = async (values: z.infer<typeof UpdateAccountValidation>) => {
 
+ 
+
+  const onSubmit = async (values: z.infer<typeof UpdateAccountValidation>) => {
+    // try {
+    //   setIsLoading(true)
+    //   const update = await fetch(`/api/account/${session?.user.id}`, {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify(values),
+    //   })
+    //   if (!update.ok) {
+    //     toast.error('Cập nhật thông tinkhông thành công.')
+    //   }
+    //   toast.success('Cập nhật thông tin thành công!')
+    // } catch (error) {
+    //   console.log(error)
+    // } finally {
+    //   setIsLoading(false)
+    // }
   }
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-   
+    e.preventDefault()
+    // if (!uploadedImage) {
+    //   toast.error('Vui lòng tải lên một hình ảnh!')
+    //   return
+    // }
+    // try {
+    //   const response = await fetch(`/api/account/${session?.user.id}/updateImage`, {
+    //     method: 'PUT',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: JSON.stringify({ image: uploadedImage }),
+    //   })
+    //   if (!response.ok) {
+    //     toast.error('Cập nhật ảnh đại diện không thành công!')
+    //     return
+    //   }
+    //   toast.success('Cập nhật ảnh thành công!')
+    // } catch (error) {
+    //   toast.error('Đã xảy ra lỗi trong quá trình cập nhật.')
+    //   console.error(error)
+    // }
   }
   return (
-    <div className="grid grid-cols-2 gap-8 mt-5">
-      <div className="col-span-1 ">
+    <div className="grid grid-cols-5 gap-8 mt-5">
+      <div className="col-span-5 xl:col-span-3">
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">Thông tin cá nhân</h3>
@@ -173,7 +229,7 @@ const UpdateAccount = () => {
           </div>
         </div>
       </div>
-      <div className="col-span-1 ">
+      <div className="col-span-5 xl:col-span-2">
         <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="border-b border-stroke px-7 py-4 dark:border-strokedark">
             <h3 className="font-medium text-black dark:text-white">Your Photo</h3>

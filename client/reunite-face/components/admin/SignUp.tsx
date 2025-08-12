@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import {
   Form,
@@ -14,15 +14,23 @@ import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { PasswordInput } from '../PasswordInput'
 import { toast } from 'sonner'
 import { RegisterSchema } from '@/validation/register'
 import SubmitButton from '../SubmitButton'
-import { UserRole } from '@prisma/client'
+import { useParams } from 'next/navigation'
 
 const SignUp = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const [formName,setFormName] = useState('Đăng ký')
+  const { accountId } = useParams()
+  useEffect(() => {
+  if (accountId) {
+    setFormName('Cập nhật tài khoản');
+  }
+}, [accountId]);
+
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -58,10 +66,10 @@ const SignUp = () => {
   }
   return (
     <div>
-      <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="rounded-sm border border-stroke bg-white dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
-            <div className="px-26 py-17.5 text-center">
+            <div className=" text-center">
               <Link className="mb-5.5 inline-block" href="/">
                 <Image
                   className="dark:hidden"
@@ -204,7 +212,7 @@ const SignUp = () => {
           <div className="w-full border-stroke dark:border-strokedark xl:w-1/2 xl:border-l-2">
             <div className="w-full p-4 sm:p-12.5 xl:p-17.5">
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
-                Đăng ký
+                {formName}
               </h2>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -219,7 +227,7 @@ const SignUp = () => {
                         <div className="relative flex items-center">
                           <FormControl>
                             <Input
-                              customProp={''}
+                              
                               placeholder="Nguyễn văn A"
                               {...field}
                               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -263,7 +271,7 @@ const SignUp = () => {
                         <div className="relative flex items-center">
                           <FormControl>
                             <Input
-                              customProp={''}
+                              
                               placeholder="adb@gmail.com"
                               {...field}
                               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -302,7 +310,7 @@ const SignUp = () => {
                         <div className="relative flex items-center">
                           <FormControl>
                             <Input
-                              customProp={''}
+                              
                               placeholder="1234567890"
                               {...field}
                               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -367,7 +375,7 @@ const SignUp = () => {
                         <div className="relative flex items-center">
                           <FormControl>
                             <Input
-                              customProp={''}
+                              
                               placeholder="shadcn"
                               {...field}
                               type="password"
@@ -409,7 +417,7 @@ const SignUp = () => {
                         <FormLabel className="mb-2.5 block font-medium text-black dark:text-white">
                           Chọn loại tài khoản
                         </FormLabel>
-
+                        {/* Check role to turn on or off radio button */}
                         <FormControl>
                           <RadioGroup
                             value={field.value}
@@ -418,13 +426,13 @@ const SignUp = () => {
                           >
                             <FormItem className="flex items-center space-x-2">
                               <FormControl>
-                                <RadioGroupItem value={UserRole.DOCTOR} id="option-one" />
+                                <RadioGroupItem value={"Người dùng"} id="option-one" />
                               </FormControl>
                               <FormLabel htmlFor="option-one">Bác sĩ</FormLabel>
                             </FormItem>
                             <FormItem className="flex items-center space-x-2">
                               <FormControl>
-                                <RadioGroupItem value={UserRole.ADMIN} id="option-two" />
+                                <RadioGroupItem value={"Quản trị viên"} id="option-two" />
                               </FormControl>
                               <FormLabel htmlFor="option-two">Quản trị viên</FormLabel>
                             </FormItem>
