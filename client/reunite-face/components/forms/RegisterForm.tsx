@@ -34,7 +34,7 @@ export const RegisterForm = () => {
       if (!currentPassword) {
         throw new Error('Password is required')
       }
-      const res = await fetch('http://localhost:8080/api/auth/signup', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_API_URL}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
