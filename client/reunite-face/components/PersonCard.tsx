@@ -53,7 +53,7 @@ const PersonCard = (personInfor: PersonCardType) => {
             : "Last seen: Seattle, WASarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."}
         </p>
         <div className="flex justify-between items-center">
-          <button className="text-indigo-700 hover:text-indigo-500 font-medium text-sm">
+          <button className="text-indigo-700 hover:text-white hover:bg-primary px-3 py-1 rounded-full font-medium text-sm">
             View Details <i className="fas fa-chevron-right ml-1"></i>
           </button>
           <button className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium flex" >

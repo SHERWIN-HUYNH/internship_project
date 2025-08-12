@@ -1,15 +1,14 @@
 import bcrypt
 from bson import ObjectId
-import logging
 from flask_jwt_extended import get_jwt_identity
-from ..models.account_model import UserModel
-from ..utils.mongo import mongo_client
+from ..models.account_model import User
+from server.utils.mongo import mongoClient
+import hashlib
 from ..utils.exceptions import NonExistAccount, UnauthorizedAccount
-
+def hashing(input):
+    assert isinstance(input, str), "Can not hash, input is not string"
+    return hashlib.sha256(input.encode()).hexdigest()
 class AccountService():
-    
-    def __init__(self, db_client):
-        self.accounts = db_client.accounts
     """
     User Services for business logic.
     """
@@ -17,22 +16,26 @@ class AccountService():
     def create_user(username, email, password,is_admin=False,phone_number=None):
         """Hashes the password and inserts a new user into the database."""
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-        user = UserModel(email, hashed_password, username, phone_number, is_admin)
+        user = User(email, hashed_password, username, phone_number, is_admin)
         return user
-        
+    @staticmethod
     def get_account_with_id(self, id: str):
         account = self.accounts.find_one({'_id': ObjectId(id)}, {'_id': 1, 'role': 1})
         if account is None:
             raise NonExistAccount(id)
         return {'id': str(account['_id']), 'role': account['role']}
+    @staticmethod
+    def user_authorize(level='both'):
+        account = accounts_services.get_account_with_id(get_jwt_identity())
+        if level != 'both' and account['role'] != level:
+            raise UnauthorizedAccount(f'Only {level} can do this')
+        return account
+
 
     
-accounts_services = AccountService(mongo_client)
+accounts_services = AccountService()
 
 
-def user_authorize(level='both'):
-    account = accounts_services.get_account_with_id(get_jwt_identity())
-    if level != 'both' and account['role'] != level:
-        raise UnauthorizedAccount(f'Only {level} can do this')
-    return account
+
+
 
