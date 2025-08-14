@@ -83,5 +83,6 @@ def get_score_of_img_to_imgs(img_embed: np.ndarray, other_imgs_embed: list[dict]
     _embedding = img_embed
 
     l2_imgs_score = list(map(_get_sim_score_of_embed, other_imgs_embed))
+    logger.info(l2_imgs_score)
     return sorted(l2_imgs_score, key=lambda i: i['l2_score'])
 

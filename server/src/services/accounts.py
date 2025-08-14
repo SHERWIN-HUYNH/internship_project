@@ -19,21 +19,23 @@ class AccountService():
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         user = UserModel(email, hashed_password, username, phone_number, is_admin)
         return user
-    @staticmethod
-    def get_account_with_id(self, id: str):
-        account = self.accounts.find_one({'_id': ObjectId(id)}, {'_id': 1, 'role': 1})
+
+
+    def get_account_with_email(self, email: str):
+        account = self.accounts.find_one({'email': email}, {'_id': 1, 'role': 1})
         if account is None:
             raise NonExistAccount(id)
         return {'id': str(account['_id']), 'role': account['role']}
-    @staticmethod
-    def user_authorize(level='both'):
-        account = accounts_services.get_account_with_id(get_jwt_identity())
+
+
+    def user_authorize(self, level='both'):
+        account = self.get_account_with_email(get_jwt_identity())
         if level != 'both' and account['role'] != level:
             raise UnauthorizedAccount(f'Only {level} can do this')
         return account
 
     
-accounts_services = AccountService()
+accounts_services = AccountService(mongo_client)
 
 
 

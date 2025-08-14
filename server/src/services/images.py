@@ -41,7 +41,7 @@ class ImagesServices:
 
 
     def upload_image(
-        self, file_name: str, stream: BytesIO, post_id: str, threshold: float= 1.5
+        self, file_name: str, stream: BytesIO, post_id: str, threshold: float= 2
     ):
         # get embeds of imgs
         img = img_to_embedding(stream)

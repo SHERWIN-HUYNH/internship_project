@@ -3,14 +3,14 @@ from flask_jwt_extended import jwt_required
 from .images import allowed_file, ALLOWED_EXTENSIONS
 from ..utils.exceptions import ParamError, NoImageProvide, FileType
 from ..services.posts import posts_services 
-from ..services.accounts import user_authorize
+from ..services.accounts import accounts_services
 
 posts_bp = Blueprint('posts', __name__)
 
 @posts_bp.get('')
 @jwt_required()
 def get_post_by_post_id():
-    user_authorize('both')
+    accounts_services.user_authorize('both')
     try:
         post_id = request.args.get('post_id', type=str)
     except ValueError | TypeError:
@@ -24,7 +24,7 @@ def get_post_by_post_id():
 @posts_bp.get('/account')
 @jwt_required()
 def get_posts_by_account_id():
-    account = user_authorize('user')
+    account = accounts_services.user_authorize('user')
 
     return jsonify({
         'result': {
@@ -36,7 +36,7 @@ def get_posts_by_account_id():
 @posts_bp.post('/search/filter')
 @jwt_required()
 def search_post_with_text_filter():
-    user_authorize('admin')
+    accounts_services.user_authorize('admin')
 
     try:
         filter = {
@@ -61,7 +61,7 @@ def search_post_with_text_filter():
 @posts_bp.post('/search/image')
 @jwt_required()
 def search_post_with_image():
-    user_authorize('admin')
+    accounts_services.user_authorize('admin')
 
     try:
         threshold = request.form.get('threshold', 1.8, type=float)
@@ -82,7 +82,7 @@ def search_post_with_image():
 @posts_bp.get('/report')
 @jwt_required()
 def report_on_posts():
-    user_authorize('admin')
+    accounts_services.user_authorize('admin')
 
     try:
         report_from = request.args.get('start_report_from', '', type=str)
@@ -97,7 +97,7 @@ def report_on_posts():
 @posts_bp.put('/finding')
 @jwt_required()
 def update_post_status_for_searching():
-    user_authorize('admin')
+    accounts_services.user_authorize('admin')
 
     try:
         post_id = request.form.get('post_id', type=str)
@@ -112,7 +112,7 @@ def update_post_status_for_searching():
 @posts_bp.post('')
 @jwt_required()
 def create_post():
-    account = user_authorize('user')
+    account = accounts_services.user_authorize('user')
     try:
         new_post = {
             'account_id' : account['id'],
@@ -127,13 +127,13 @@ def create_post():
         raise ParamError('Invalid fields provided')
 
     post_id = posts_services.create_post(new_post)
-    return redirect(url_for('posts.get_post_by_id', post_id=post_id))
+    return redirect(url_for('posts.get_post_by_post_id', post_id=post_id))
 
 
 @posts_bp.put('')
 @jwt_required()
 def update_post():
-    user_authorize('user')
+    accounts_services.user_authorize('user')
 
     try:
         modified_post = {
@@ -150,13 +150,13 @@ def update_post():
 
     if posts_services.update_post(modified_post) == 0:
         raise Exception('Update post failed')
-    return redirect(url_for('posts.get_post_by_id', post_id=modified_post['post_id']))
+    return redirect(url_for('posts.get_post_by_post_id', post_id=modified_post['post_id']))
 
 
 @posts_bp.delete('')
 @jwt_required()
 def delete_post():
-    user_authorize('user')
+    accounts_services.user_authorize('user')
 
     try:
         post_id = request.form.get('post_id', type=str)
