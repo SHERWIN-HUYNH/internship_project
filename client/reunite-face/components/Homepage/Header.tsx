@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Dropdown from './DropDown'
+import { useAuth } from '@/context/authContext'
 
 
 
@@ -12,14 +13,13 @@ const  Header = (props: {
   setSidebarOpen: (arg0: boolean) => void
 })=> {
  const [loggedIn, setLoggedIn] = useState<boolean >(false)
-
+ const {user} = useAuth()
   useEffect(() => {
-    const cookies = document.cookie
-    console.log('COOKIES', cookies)
-    if(cookies.includes('access_token')){
+    console.log('USER HEADER', user)
+    if(user != null){
         setLoggedIn(true)
     }
-  }, [])
+  }, [loggedIn])
   return (
     <header className="sticky top-0 z-50 bg-slate-100 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">

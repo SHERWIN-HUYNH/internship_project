@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
       body: JSON.stringify({ email, password }),
     })
     const data = await flaskRes.json()
-
+    console.log('VALUE FROM FLASK', data)
     if (!flaskRes.ok) {
         return NextResponse.json(
           { error: data.message || 'Authentication failed' },
@@ -26,25 +26,30 @@ export async function POST(request: NextRequest) {
 
     const { access_token: token, expires_in = process.env.JWT_ACCESS_EXPIRES } = data
 
-    const cookieHeader = serialize('access_token', token, {
-      httpOnly: false,
+    const res = NextResponse.json(
+      {
+        success: true,
+        user:  {
+          account_id: data.account_id,
+          name: data.userData.name,
+          email: data.userData.email,
+          role: data.userData.role,
+          phone: data.userData.phone,
+        },
+      },
+      { status: 200 }
+    )
+    
+    
+
+     res.cookies.set('access_token', token, {
+      httpOnly: true,             
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: expires_in,
+      sameSite: 'lax',             
+      maxAge: 86400,                      
       path: '/',
     })
-
-    // 6. Return success with cookie
-    return NextResponse.json(
-      { success: true },
-      {
-        status: 200,
-        headers: {
-          'Set-Cookie': cookieHeader,
-          'Content-Type': 'application/json',
-        },
-      }
-    )
+    return res
 
   } catch (err: any) {
     return NextResponse.json(

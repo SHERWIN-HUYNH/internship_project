@@ -26,11 +26,8 @@ export const RegisterForm = () => {
     },
   })
   const onSubmit = async (values: z.infer<typeof RegisterUser2>) => {
-    console.log(form.formState.errors)
-    console.log('IS LOADING', isLoading)
     setIsLoading(true)
     try {
-      console.log('VALUES FROM REGISTER', values)
       if (!currentPassword) {
         throw new Error('Password is required')
       }

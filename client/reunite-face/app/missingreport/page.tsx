@@ -5,15 +5,19 @@ import { useRouter } from 'next/navigation'
 import { ArrowBigLeft } from 'lucide-react';
 import Image from 'next/image'
 import Link from 'next/link';
+import { toast } from 'sonner';
+import { Console } from 'console';
+import { useAuth } from '@/context/authContext';
 interface MissingPersonFormData {
+  account_id: string;
   name: string;
   dob?: string;
   gender: string;
-  missing_since: string;
-  description: string;
-  distinguishing_features: string;
+  missing_since?: string;
+  description?: string;
+  // distinguishing_features: string;
   relationship: string;
-  address: string;
+  address?: string;
   contact_info: string;
   status: 'finding' | 'found';
   images: File[]
@@ -21,14 +25,16 @@ interface MissingPersonFormData {
 
 const MissingPersonForm: NextPage = () => {
   const router = useRouter();
+  const {user} = useAuth()
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<MissingPersonFormData>({
+    account_id: user?.account_id || '',
     name: '',
     gender: '',
     missing_since: '',
     description: '',
-    distinguishing_features: '',
+    // distinguishing_features: '',
     relationship: '',
     address: '',
     contact_info: '',
@@ -44,13 +50,70 @@ const MissingPersonForm: NextPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
+    if(formData.account_id === '') {
+      toast.error('Vui lòng đăng nhập hoặc đăng ký')
+      return 
+    }
+    if (formData.missing_since) {
+    const missingDate = new Date(formData.missing_since);
+    console.log('RUN 1',formData);
+    if (formData.dob) {
+      const dobDate = new Date(formData.dob);
+      if (isNaN(dobDate.getTime()) || isNaN(missingDate.getTime())) {
+      toast.error('Ngày sinh hoặc ngày mất tích không hợp lệ');
+      return;
+      }
+      if (missingDate <= dobDate) {
+        console.log('RUN 2')
+        toast.error('Ngày mất tích phải sau ngày sinh');
+      return;
+    }
+    }
+    
+    console.log('RUN 3')
+    }
+    try {
+      const payload = new FormData();
+      payload.append('name', formData.name);
+      payload.append('gender', formData.gender);
+      if (formData.dob) payload.append('dob', formData.dob);
+      if (formData.missing_since) payload.append('missing_since', formData.missing_since);
+      if (formData.description) payload.append('description', formData.description);
+      payload.append('relationship', formData.relationship);
+      if (formData.address) payload.append('address', formData.address);
+      payload.append('contact_info', formData.contact_info);
+      payload.append('status', formData.status);
+
+
+      formData.images.forEach((img) => {
+        payload.append('images', img);
+      });
+      console.log('RUN 4',formData)
+      const res = await fetch(`/api/missingposts`, {
+        method: 'POST',
+        body: payload, 
+      });
+
+      const responseData = await res.json();
+
+    if (!res.ok) {
+      throw new Error(responseData.error || 'Upload failed');
+    }
+
+    toast.success('Created a new post');
+    router.push('/')
+    } catch (error) {
+      if (error instanceof Error) {
+          console.log('ERROR HAPPEN')
+          toast.error(error.message)
+      }
+    }
   };
-   // Handle image selection
-  // Adding new uploads
+
 const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
   if (!e.target.files) return;
   const files = Array.from(e.target.files);  // File[]
-console.log('FILES', files) 
+  console.log('FILES', files) 
   setFormData(prev => ({
     ...prev,
     images: [...prev.images, ...files],
@@ -60,7 +123,7 @@ console.log('FILES', files)
   setPreviewImages(prev => [...prev, ...newPreviews]);
 };
 
-// Removing an image by index
+
 const removeImage = (index: number) => {
   setFormData(prev => {
     const imgs = [...prev.images];
@@ -186,7 +249,7 @@ const removeImage = (index: number) => {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Distinguishing Features</label>
             <textarea
               name="distinguishing_features"
@@ -196,7 +259,7 @@ const removeImage = (index: number) => {
               placeholder="Scars, tattoos, birthmarks, disabilities, unique mannerisms..."
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
             />
-          </div>
+          </div> */}
 
           {/* Grid Section 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

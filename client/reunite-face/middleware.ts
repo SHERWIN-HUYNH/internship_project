@@ -12,7 +12,7 @@ const PUBLIC_PATHS = [
 const RESTRICTED_PATHS: Record<string, string[]> = {
   ADMIN: ['/admin'],
   USER: [
-    '/missingReport',
+    '/missingreport',
     '/account/:path*',
   ],
 }

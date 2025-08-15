@@ -8,7 +8,6 @@ import { useState } from "react";
 
 export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  console.log('ENV TEST', process.env.NEXT_PUBLIC_FLASK_API_URL)
   return (
     <div className="">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
