@@ -21,7 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/me', { cache: 'no-store' })
+        const res = await fetch('/api/me', { 
+          cache: 'no-store',
+          credentials: 'include' })
         const data = await res.json()
         if (data.loggedIn) setUser(data.user)
       } finally {

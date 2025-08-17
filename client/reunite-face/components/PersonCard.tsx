@@ -11,14 +11,15 @@ type PersonCardType = {
   dateMissing: string;
 };
 const PersonCard = (personInfor: PersonCardType) => {
+  console.log(personInfor);
   return (
-    <div className="person-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300">
-      <div className="relative h-48">
+    <div className="person-card bg-white rounded-xl shadow-md overflow-hidden transition duration-300  w-[350px]">
+      <div className="relative h-52">
         <Image
-          src="/assets/images/missing_people/person1.png"
+          src={personInfor.imageUrl}
           alt="Missing person: Sarah Johnson, 16-year-old female with brown hair, blue eyes, last seen wearing red t-shirt and jeans"
-          width={600}
-          height={400}
+          width={450}
+          height={300}
           className="w-full h-full object-cover"
         />
         <div className="absolute bottom-0 left-0 bg-indigo-700 text-white px-3 py-1 text-sm font-medium">
@@ -47,10 +48,9 @@ const PersonCard = (personInfor: PersonCardType) => {
             : "Last seen: Seattle, WA"}
         </p>
         <p className="text-[#808080] text-sm mb-4">
-          {" "}
-          {personInfor.description
-            ? personInfor.description
-            : "Last seen: Seattle, WASarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."}
+          {personInfor.description == "No description provided"
+            ? "Last seen: Seattle, WASarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
+            : personInfor.description }
         </p>
         <div className="flex justify-between items-center">
           <button className="text-indigo-700 hover:text-white hover:bg-primary px-3 py-1 rounded-full font-medium text-sm">

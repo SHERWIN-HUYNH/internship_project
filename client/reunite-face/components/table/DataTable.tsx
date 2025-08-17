@@ -56,7 +56,7 @@ export function DataTable<TData, TValue>({
       <div className="table-header flex items-center justify-between mb-3">
         <div className="">
           <Input
-            placeholder="Tìm tên người mất tích..."
+            placeholder="Search by missing people name..."
             value={table.getColumn('patient')?.getFilterValue() as string}
             onChange={(event) =>
               table.getColumn('patient')?.setFilterValue(event.target.value)
@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
         <div className="flex gap-3">
           <div>
             <Input
-              placeholder="Tìm theo tên tài khoản..."
+              placeholder="Search by posters..."
               value={table.getColumn('primaryPhysician')?.getFilterValue() as string}
               onChange={(event) => {
                 console.log(
@@ -81,7 +81,7 @@ export function DataTable<TData, TValue>({
           </div>
           <div>
             <label htmlFor="status-filter" className="mr-2">
-              Trạng thái:
+              Status:
             </label>
             <select
               id="status-filter"
@@ -92,8 +92,8 @@ export function DataTable<TData, TValue>({
               className="p-2 border rounded-2xl"
             >
               <option value="">All</option>
-              <option value="Finding">Đang tìm</option>
-              <option value="Found">Đã tìm thấy</option>
+              <option value="Finding">Finding</option>
+              <option value="Found">Found</option>
               
             </select>
           </div>

@@ -15,11 +15,10 @@ const  Header = (props: {
  const [loggedIn, setLoggedIn] = useState<boolean >(false)
  const {user} = useAuth()
   useEffect(() => {
-    console.log('USER HEADER', user)
-    if(user != null){
-        setLoggedIn(true)
-    }
-  }, [loggedIn])
+  if(user != null){
+    setLoggedIn(true)
+  }
+},[user] )
   return (
     <header className="sticky top-0 z-50 bg-slate-100 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">

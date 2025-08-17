@@ -3,6 +3,7 @@ import { AppointmentSchedule } from '@/test/interface'
 import { ColumnDef } from '@tanstack/react-table'
 import React from 'react'
 import { StatusBadge } from '../StatusBadge'
+import { Checkbox } from '../ui/checkbox'
 export const columns: ColumnDef<AppointmentSchedule>[] = [
   {
     header: 'STT',
@@ -12,7 +13,7 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
   },
   {
     accessorKey: 'patient',
-    header: 'Bệnh nhân',
+    header: 'Missing person name',
     // enableColumnFilter: true,
     cell: ({ row }) => {
       const appointment = row.original
@@ -26,7 +27,7 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
   },
   {
     accessorKey: 'status',
-    header: 'Trạng thái',
+    header: 'Status',
     cell: ({ row }) => {
       const appointment = row.original
       const status = appointment.status.toLowerCase()
@@ -39,7 +40,7 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
   },
   {
     accessorKey: 'date',
-    header: 'Ngày',
+    header: 'Date created',
     cell: ({ row }) => {
       const appointment = row.original
       return (
@@ -51,7 +52,7 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
   },
   {
     accessorKey: 'timeSlot',
-    header: 'Thời gian',
+    header: 'Missing since',
     cell: ({ row }) => {
       const appointment = row.original
       return (
@@ -63,11 +64,11 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
   },
   {
     accessorKey: 'primaryPhysician',
-    header: 'Bác sĩ',
+    header: 'Poster name',
     // enableColumnFilter: true,
     cell: ({ row }) => {
       const appointment = row.original
-      const doctor = appointment.doctorSchedule.doctor
+      const doctor = appointment.doctorSchedule.doctorName
 
       return (
         <div className="flex items-center gap-3">
@@ -81,35 +82,39 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
       return doctorName.toLowerCase().includes(filterValue.toLowerCase())
     },
   },
-  // {
-  //   id: 'actions',
-  //   header: () => <div className="pl-4">Xem chi tiết</div>,
-  //   cell: ({ row }) => {
-  //     const appointment = row.original
+  {
+    id: 'actions',
+    header: () => <div className="pl-4">Hide or delete</div>,
+    cell: ({ row }) => {
+      const appointment = row.original
 
-  //     return (
-  //       <div className="flex gap-1">
-  //         <AppointmentModal
-  //           patientId={appointment.profile.id}
-  //           userId={appointment.profile.userId}
-  //           appointment={appointment}
-  //           type="Chi tiết"
-  //           title="Schedule Appointment"
-  //           description="Please confirm the following details to schedule."
-  //         />
-  //         {appointment.status == 'PENDING' && (
-  //           <AppointmentModal
-  //             patientId={appointment.profile.id}
-  //             userId={appointment.profile.userId}
-  //             appointment={appointment}
-  //             type="Hủy"
-  //             title="Cancel Appointment"
-  //             stripeCustomerId={appointment.stripeCustomerId}
-  //             description="Are you sure you want to cancel your appointment?"
-  //           />
-  //         )}
-  //       </div>
-  //     )
-  //   },
-  // },
+      return (
+        <ul className=' flex items-center align-center space-x-2'>
+          <li><Checkbox /> Hide</li>
+          <li><Checkbox /> Delete</li>
+        </ul>
+        // <div className="flex gap-1">
+        //   <AppointmentModal
+        //     patientId={appointment.profile.id}
+        //     userId={appointment.profile.userId}
+        //     appointment={appointment}
+        //     type="Chi tiết"
+        //     title="Schedule Appointment"
+        //     description="Please confirm the following details to schedule."
+        //   />
+        //   {appointment.status == 'PENDING' && (
+        //     <AppointmentModal
+        //       patientId={appointment.profile.id}
+        //       userId={appointment.profile.userId}
+        //       appointment={appointment}
+        //       type="Hủy"
+        //       title="Cancel Appointment"
+        //       stripeCustomerId={appointment.stripeCustomerId}
+        //       description="Are you sure you want to cancel your appointment?"
+        //     />
+        //   )}
+        // </div>
+      )
+    },
+  },
 ]

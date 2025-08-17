@@ -1,5 +1,5 @@
 'use client'
-import { ChangeEvent, useRef, useState } from 'react';
+import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation'
 import { ArrowBigLeft } from 'lucide-react';
@@ -25,19 +25,19 @@ interface MissingPersonFormData {
 
 const MissingPersonForm: NextPage = () => {
   const router = useRouter();
-  const {user} = useAuth()
+  const {user, loading} = useAuth()
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [formData, setFormData] = useState<MissingPersonFormData>({
-    account_id: user?.account_id || '',
-    name: '',
+    account_id:  '',
+    name: 'PERSON',
     gender: '',
     missing_since: '',
-    description: '',
+    description: 'Last seen in ThaiLand',
     // distinguishing_features: '',
-    relationship: '',
-    address: '',
-    contact_info: '',
+    relationship: 'PARENT',
+    address: 'NEW YORK',
+    contact_info: '09249234',
     status: 'finding',
     images:[]
   });
@@ -46,14 +46,23 @@ const MissingPersonForm: NextPage = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
+  useEffect(() => {
+    if (user?.account_id) {
+      setFormData(prev => ({ ...prev, account_id: user.account_id! }));
+    }
+  }, [user?.account_id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
-    if(formData.account_id === '') {
-      toast.error('Vui lòng đăng nhập hoặc đăng ký')
-      return 
-    }
+    // if (loading) {
+    //   return;
+    // }
+    // if (!user?.account_id) {
+    //   toast.error('Vui lòng đăng nhập hoặc đăng ký');
+    //   router.push('/login');
+    //   return;
+    // }
     if (formData.missing_since) {
     const missingDate = new Date(formData.missing_since);
     console.log('RUN 1',formData);
@@ -88,8 +97,9 @@ const MissingPersonForm: NextPage = () => {
       formData.images.forEach((img) => {
         payload.append('images', img);
       });
+      
       console.log('RUN 4',formData)
-      const res = await fetch(`/api/missingposts`, {
+      const res = await fetch('/api/posts', {
         method: 'POST',
         body: payload, 
       });
@@ -195,9 +205,9 @@ const removeImage = (index: number) => {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all appearance-none bg-white"
               >
                 <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
                 <option value="unknown">Unknown</option>
               </select>
               <div className="absolute right-10 top-9 pointer-events-none">
@@ -368,11 +378,11 @@ const removeImage = (index: number) => {
             <button
               type="button"
               onClick={() => setFormData({
+                account_id: '',
                 name: '',
                 gender: '',
                 missing_since: '',
                 description: '',
-                distinguishing_features: '',
                 relationship: '',
                 address: '',
                 contact_info: '',

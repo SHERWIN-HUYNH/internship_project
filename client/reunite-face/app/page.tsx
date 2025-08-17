@@ -3,6 +3,7 @@ import Footer from "@/components/Homepage/Footer"
 import Header from "@/components/Homepage/Header"
 import Hero from "@/components/Homepage/Hero";
 import ListPeople from "@/components/ListPeople";
+import { MainSearch } from "@/components/MainSearch";
 import SearchFiler from "@/components/SearchFilter";
 import { useState } from "react";
 
@@ -12,8 +13,7 @@ export default function Home() {
     <div className="">
       <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <Hero />
-      <SearchFiler />
-      <ListPeople />
+      <MainSearch />
       <Footer />
     </div>
   );
