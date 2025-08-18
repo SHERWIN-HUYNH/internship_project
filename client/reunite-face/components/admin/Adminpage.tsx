@@ -15,15 +15,15 @@ const AdminPage = () => {
   return (
     <div className="mx-auto flex max-w-7xl flex-col space-y-14 p-4 md:p-6 2xl:p-10">
       <header className="admin-header">
-        <Link href="/" className="cursor-pointer">
+        {/* <Link href="/" className="cursor-pointer">
           <Image
-            src="/assets/icons/logo-full.svg"
+            src="/assets/images/logo.png"
             height={32}
             width={162}
             alt="logo"
-            className="h-8 w-fit"
+            className="h-8 w-fit text-white"
           />
-        </Link>
+        </Link> */}
 
         <p className="text-16-semibold dark:text-red text-white">Admin Dashboard</p>
       </header>
@@ -31,32 +31,32 @@ const AdminPage = () => {
       <main className="admin-main">
         <section className="w-full space-y-4">
           <h1 className="header">Welcome 👋</h1>
-          <p className="text-dark-700">Start the day with managing new appointments</p>
+          <p className="text-dark-700">Start the day with managing new posts</p>
         </section>
 
         <section className="admin-stat">
           <StatCard
             type="appointments"
             count={50}
-            label="Tổng số tài khoản"
+            label="Accounts"
             icon={'/assets/icons/appointments.svg'}
           />
           <StatCard
             type="pending"
             count={100}
-            label="Tổng số bài đăng"
+            label="Posts"
             icon={'/assets/icons/pending.svg'}
           />
           <StatCard
             type="cancelled"
             count={150}
-            label="Số người mất tích đã tìm thấy"
+            label="Missing people found"
             icon={'/assets/icons/cancelled.svg'}
           />
           <StatCard
             type="appointments"
             count={50}
-            label="Tổng số lượt tra cứu"
+            label="Number of search"
             icon={'/assets/icons/appointments.svg'}
           />
         </section>

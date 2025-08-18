@@ -68,29 +68,29 @@ const PersonInfor = () => {
                       
                       {/* INFO SECTION */}
                       <div className="lg:col-span-5 mt-8 lg:mt-0 flex flex-col space-y-6 bg-white p-6 rounded-lg shadow-2xl">
-                        <h1 className="text-4xl font-semibold text-primary">Nguyễn Văn A</h1>
+                        <h1 className="text-4xl font-semibold text-primary">Nguyễn Thị B</h1>
                         <div className=" bg-secondaryPriamry text-white px-3 py-1 rounded-full text-lg flex justify-center">
                           <p>Finding</p>
                         </div>
                         
                         <ul className="space-y-2 text-xl">
-                          <li><strong>Giới tính:</strong> Nam</li>
-                          <li><strong>Ngày sinh:</strong> 15/08/1990</li>
-                          <li><strong>Ngày sự kiện:</strong> 01/08/2025</li>
-                          <li><strong>Mô tả:</strong> Cao 1m70, nặng 60kg, mặc áo trắng…</li>
+                          <li><strong>Gender:</strong> Nữ</li>
+                          <li><strong>Date of birth:</strong> 15/08/1990</li>
+                          <li><strong>Missing since:</strong> 01/08/2025</li>
+                          <li><strong>Description:</strong> Cao 1m70, nặng 60kg, mặc áo trắng…</li>
                         </ul>
                         
                         <div className="border-t pt-4 space-y-2 text-xl">
-                          <h2 className="text-lg font-medium">Liên hệ</h2>
-                          <p><strong>Người đăng:</strong> Trần Thị Bích</p>
-                          <p><strong>SĐT:</strong> 0909 xxxx</p>
+                          <h2 className="text-lg font-medium">Contact</h2>
+                          <p><strong>Poster:</strong> Trần Thị Bích</p>
+                          <p><strong>Contact infor:</strong> 0909 xxxx</p>
                           
                           <div className="flex space-x-4">
                             <button className="flex-1 bg-secondaryPriamry text-white py-2 rounded hover:bg-primary">
-                              Gọi điện
+                              Call
                             </button>
                             <button className="flex-1 border border-secondaryPriamry text-secondaryPriamry py-2 rounded hover:bg-primary/50">
-                              Nhắn tin
+                              Text
                             </button>
                           </div>
                         </div>

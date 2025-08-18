@@ -19,12 +19,13 @@ export async function GET(req: NextRequest) {
   const payload = decodeJwt<any>(token)
   if (!payload) return NextResponse.json({ loggedIn: false })
 
+  const account_id = payload.user_id
   const name = payload.name
   const email = payload.email || payload.sub
   const role = payload.role
 
   return NextResponse.json({
     loggedIn: true,
-    user: { name, email, role },
+    user: { name, email, role, account_id },
   })
 }

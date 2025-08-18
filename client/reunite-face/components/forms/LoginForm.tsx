@@ -14,10 +14,12 @@ import { PasswordInput } from '../PasswordInput'
 import { Label } from '../ui/label'
 import React from 'react'
 import { toast } from 'sonner'
+import { useAuth } from '@/context/authContext'
 export const LoginForm = () => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [currentPassword, setCurrentPassword] = useState('')
+  const {user,setUser} = useAuth()
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -37,7 +39,7 @@ export const LoginForm = () => {
       if (!currentPassword) {
         throw new Error('Password is required')
       }
-      const res = await fetch(`api/login`, {
+      const res = await fetch(`api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,6 +55,8 @@ export const LoginForm = () => {
         console.log('CODE LOI',responseData)
         throw new Error(responseData.error)
       }
+      console.log('RESPONSE DATA', responseData)
+      setUser(responseData.user)
       // Redirect to home if login successfully
       toast.success('Login successfully')
       router.push('/')
@@ -69,9 +73,9 @@ export const LoginForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
         <section className="mb-12 space-y-4">
           <h1 className="header">Xin chào 👋</h1>
-          <p className="text-dark-700">
+          {/* <p className="text-dark-700">
             Bước đầu của sức khỏe tốt hơn – Đặt lịch hẹn ngay hôm nay!
-          </p>
+          </p> */}
         </section>
 
         <CustomFormField

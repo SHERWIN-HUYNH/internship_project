@@ -1,7 +1,7 @@
 'use client'
 import { createContext, useContext, useEffect, useState } from 'react'
 
-type User = { name: string; email: string; role: string }
+type User = { account_id: string;name: string; email: string; role: string; phone: string }
 type AuthContextType = {
   user: User | null
   setUser: (u: User | null) => void
@@ -21,7 +21,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/api/me', { cache: 'no-store' })
+        const res = await fetch('/api/me', { 
+          cache: 'no-store',
+          credentials: 'include' })
         const data = await res.json()
         if (data.loggedIn) setUser(data.user)
       } finally {

@@ -26,11 +26,8 @@ export const RegisterForm = () => {
     },
   })
   const onSubmit = async (values: z.infer<typeof RegisterUser2>) => {
-    console.log(form.formState.errors)
-    console.log('IS LOADING', isLoading)
     setIsLoading(true)
     try {
-      console.log('VALUES FROM REGISTER', values)
       if (!currentPassword) {
         throw new Error('Password is required')
       }
@@ -70,9 +67,9 @@ export const RegisterForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
         <section className="mb-12 space-y-4">
           <h1 className="header">Xin chào 👋</h1>
-          <p className="text-dark-700">
+          {/* <p className="text-dark-700">
             Bước đầu của sức khỏe tốt hơn – Đặt lịch hẹn ngay hôm nay!
-          </p>
+          </p> */}
         </section>
 
         <CustomFormField
