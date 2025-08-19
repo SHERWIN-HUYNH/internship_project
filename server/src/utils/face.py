@@ -1,5 +1,4 @@
 from functools import partial
-from multiprocessing import shared_memory
 import os
 
 from ..utils.exceptions import DetectFaceError
@@ -7,6 +6,8 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from mtcnn.mtcnn import MTCNN
 from keras_facenet import FaceNet
 from PIL import Image, ImageEnhance
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import shared_memory
 from io import BytesIO
 import cv2 as cv
 import numpy as np
