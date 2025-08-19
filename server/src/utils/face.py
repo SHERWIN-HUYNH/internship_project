@@ -1,8 +1,12 @@
+from functools import partial
+from multiprocessing import shared_memory
 import os
+
+from ..utils.exceptions import DetectFaceError
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from mtcnn.mtcnn import MTCNN
 from keras_facenet import FaceNet
-from PIL import Image
+from PIL import Image, ImageEnhance
 from io import BytesIO
 import cv2 as cv
 import numpy as np
@@ -57,31 +61,58 @@ face_detect = FaceDetect()
 face_verify = FaceVerify()
 
 
+def enhance_image(img):
+    sharpness = ImageEnhance.Sharpness(img)
+    img_ = sharpness.enhance(2.0)
+    contrast = ImageEnhance.Contrast(img_)
+    img_ = contrast.enhance(1.5)
+    if len(np.array(img_).shape) == 2:
+        img_ = cv.cvtColor(np.array(img_), cv.COLOR_GRAY2RGB)
+    img_ = cv.fastNlMeansDenoisingColored(np.array(img_), None, h=3, hColor=3, templateWindowSize=7, searchWindowSize=21)
+    # Save for debugging
+    cv.imwrite("debug_enhanced.jpg", img_)
+    return img_
+
+
 def img_to_embedding(stream: BytesIO) -> np.ndarray:
-    try:
-        img = np.array(Image.open(stream))
-        face = face_detect.extract_face(img)
-    except ValueError as e:
-        logger.exception('Face extraction error')
-        return None
-    except OSError as e:
-        logger.exception('Face extraction error')
-        return None
-    return face if face is None else face_verify.get_embedding(face)
+    img = Image.open(stream)
+    enhanced_img = enhance_image(img)
+    face = face_detect.extract_face(enhanced_img)
+    logger.info(f"Face detected: {face is not None}")
+    if face is None:
+        raise DetectFaceError("No face detected")
+    return face_verify.get_embedding(face)
 
 
-def _get_sim_score_of_embed(img_dict):
-    global _embedding
-    img_embed = np.array(img_dict.pop('feature'), dtype=np.float32)    
-    # measure_embeddings_similarity
-    img_dict['l2_score'] = float(np.sum((img_embed - _embedding)**2))
-    return img_dict
+# Global variables for workers
+_embedding_shape = None
+_embedding_dtype = None
+_embedding_shm = None
+
+
+def _init_worker(shm_name, shape, dtype):
+    """Initialize worker with access to the shared embedding array."""
+    global _embedding_shm, _embedding_shape, _embedding_dtype, _embedding
+
+    _embedding_shape = shape
+    _embedding_dtype = np.dtype(dtype)
+    _embedding_shm = shared_memory.SharedMemory(name=shm_name)
+
+    _embedding = np.ndarray(shape, dtype=np.dtype(dtype), buffer=_embedding_shm.buf)
+
+
+def _get_sim_score_of_embed(img_embed: np.ndarray, other_img: dict) -> dict:
+    feature = np.array(other_img['feature'], dtype=np.float32)
+    l2_score = np.linalg.norm(img_embed - feature)
+    return {
+        'l2_score': l2_score,
+        '_id': other_img['_id'],
+        'post_id': other_img['post']['_id']  # Use post_id instead of post._id
+    }
     
 
 def get_score_of_img_to_imgs(img_embed: np.ndarray, other_imgs_embed: list[dict]):
-    global _embedding
-    _embedding = img_embed
-
-    l2_imgs_score = list(map(_get_sim_score_of_embed, other_imgs_embed))
-    logger.info(l2_imgs_score)
+    l2_imgs_score = list(map(partial(_get_sim_score_of_embed, img_embed), other_imgs_embed))
+    logger.info(f'l2 score\n{l2_imgs_score}')
     return sorted(l2_imgs_score, key=lambda i: i['l2_score'])
+

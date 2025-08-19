@@ -24,7 +24,7 @@ class MongoDbClient:
             self.logger.addHandler(handler)
 
         # Get connection string
-        uri = os.getenv("MONGO_URI")
+        uri = os.getenv("MONGODB_URI")
         if not uri:
             raise RuntimeError("MONGODB_URI not found in environment variables")
 
@@ -49,6 +49,7 @@ class MongoDbClient:
         except errors.ServerSelectionTimeoutError as e:
             self.logger.exception("Could not connect to MongoDB")
             raise
-
+    def start_session(self):
+        return self.client.start_session()
     
 mongo_client = MongoDbClient()

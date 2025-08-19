@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from ..services.images import images_services
-from ..services.accounts import accounts_services
+from ..services.images_services import images_services
+from ..services.accounts_services import accounts_services
 from ..utils.exceptions import ParamError, NoImageProvide, FileType
 
 images_bp = Blueprint('images', __name__)

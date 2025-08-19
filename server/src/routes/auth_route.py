@@ -1,10 +1,12 @@
 from flask import Blueprint, request, jsonify, make_response
 from datetime import timedelta
-from ..services.auth import AuthService
+from ..services.auth_services import AuthService
 from src.config import Config
+import logging
+logger = logging.getLogger(__name__)
 
 auth_bp = Blueprint('auth', __name__)
-
+auth_service = AuthService()
 COOKIE_NAME = "access_token"
 
 def _set_auth_cookie(response, token: str):
@@ -23,7 +25,7 @@ def _set_auth_cookie(response, token: str):
 def signup():
     json_data = request.get_json() or {}
     try:
-        result = AuthService.signup(json_data)
+        result = auth_service.signup(json_data)
     except ValueError as e:
         err = e.args[0]
         if isinstance(err, dict):
@@ -32,6 +34,7 @@ def signup():
 
     response = make_response(jsonify({
         "message": "User created successfully",
+        "account_id": result["account_id"],
         "userData": result["userData"],
         "access_token": result["token"]
     }), 201)
@@ -42,8 +45,10 @@ def signup():
 def login():
     data = request.get_json() or {}
     try:
-        result = AuthService.login(data)
+        print('DATA LOGIN',data)
+        result = auth_service.login(data)
     except ValueError as e:
+        logger.exception("Login failed: %r", e)
         err = e.args[0]
         if isinstance(err, dict):
             return jsonify(err), 422
@@ -51,6 +56,7 @@ def login():
 
     response = make_response(jsonify({
         "message": "Login successful!",
+        "account_id": result["account_id"],
         "userData": result["userData"],
         "access_token": result["token"]
     }), 200)
