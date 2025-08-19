@@ -71,9 +71,9 @@ class ImageUploadFailed(Exception):
         super().__init__(self.message)
         self.status_code = status_code
 
-class ImageIdentityError(Exception):
-    def __init__(self, msg, status_code=400):
-        self.message = f'Identity in file: {msg}'
+class DifferentImageIdentityError(Exception):
+    def __init__(self, filename, status_code=400):
+        self.message = f'The system assumed the identity in file: {filename} was not the same as all identities you have provided, choose another one'
         super().__init__(self.message)
         self.status_code = status_code
 

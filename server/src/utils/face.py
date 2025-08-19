@@ -1,4 +1,5 @@
 from functools import partial
+from multiprocessing import shared_memory
 import os
 
 from ..utils.exceptions import DetectFaceError
@@ -6,8 +7,6 @@ os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 from mtcnn.mtcnn import MTCNN
 from keras_facenet import FaceNet
 from PIL import Image, ImageEnhance
-from concurrent.futures import ProcessPoolExecutor
-from multiprocessing import shared_memory
 from io import BytesIO
 import cv2 as cv
 import numpy as np
@@ -23,6 +22,7 @@ formatter = logging.Formatter(
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+
 class FaceDetect:
     def __init__(self, target_size=(160, 160)):
         self.target_size = target_size
@@ -31,7 +31,10 @@ class FaceDetect:
 
 
     def extract_face(self, img: np.ndarray) -> np.ndarray:
-        faces = self.detector.detect_faces(img)
+        try:
+            faces = self.detector.detect_faces(img)
+        except Exception:
+            return None
         if len(faces) != 1:
             return None
 
@@ -87,31 +90,6 @@ _embedding_dtype = None
 _embedding_shm = None
 
 
-# def _init_worker(shm_name, shape, dtype):
-#     global _embedding
-#     shm = shared_memory.SharedMemory(name=shm_name)
-#     _embedding = np.ndarray(shape, dtype=dtype, buffer=shm.buf)
-
-# def _get_sim_score_of_embed(other_img: dict) -> dict:
-#     global _embedding
-#     feature = np.array(other_img['feature'], dtype=np.float32)
-#     l2_score = np.linalg.norm(_embedding - feature)
-#     return {'l2_score': l2_score, '_id': other_img['_id'], 'post._id': other_img['post']['_id']}
-
-# def get_score_of_img_to_imgs(img_embed: np.ndarray, other_imgs_embed: list[dict]):
-#     # Create shared memory for img_embed
-#     shm = shared_memory.SharedMemory(create=True, size=img_embed.nbytes)
-#     shm_arr = np.ndarray(img_embed.shape, dtype=img_embed.dtype, buffer=shm.buf)
-#     shm_arr[:] = img_embed[:]
-    
-#     try:
-#         with ProcessPoolExecutor(initializer=_init_worker, initargs=(shm.name, img_embed.shape, img_embed.dtype)) as executor:
-#             l2_imgs_score = list(executor.map(_get_sim_score_of_embed, other_imgs_embed))
-#         logger.info(f'L2 scores: {[s["l2_score"] for s in l2_imgs_score]}')
-#         return sorted(l2_imgs_score, key=lambda i: i['l2_score'])
-#     finally:
-#         shm.close()
-#         shm.unlink()
 def _init_worker(shm_name, shape, dtype):
     """Initialize worker with access to the shared embedding array."""
     global _embedding_shm, _embedding_shape, _embedding_dtype, _embedding
