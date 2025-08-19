@@ -32,7 +32,7 @@ const Dropdown = () => {
 
       {/* Dropdown Start */}
       {dropdownOpen && (
-        <div className="absolute right-0 mt-4 w-62.5 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div className="absolute z-9999 right-0 mt-4 w-62.5 rounded-lg border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
           <ul className="flex flex-col border-b border-stroke dark:border-strokedark w-full">
             <li className="w-full px-6 py-2">
               Xin chào{' '}

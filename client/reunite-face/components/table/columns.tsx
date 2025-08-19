@@ -89,31 +89,13 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
       const appointment = row.original
 
       return (
-        <ul className=' flex items-center align-center space-x-2'>
-          <li><Checkbox /> Hide</li>
-          <li><Checkbox /> Delete</li>
-        </ul>
-        // <div className="flex gap-1">
-        //   <AppointmentModal
-        //     patientId={appointment.profile.id}
-        //     userId={appointment.profile.userId}
-        //     appointment={appointment}
-        //     type="Chi tiết"
-        //     title="Schedule Appointment"
-        //     description="Please confirm the following details to schedule."
-        //   />
-        //   {appointment.status == 'PENDING' && (
-        //     <AppointmentModal
-        //       patientId={appointment.profile.id}
-        //       userId={appointment.profile.userId}
-        //       appointment={appointment}
-        //       type="Hủy"
-        //       title="Cancel Appointment"
-        //       stripeCustomerId={appointment.stripeCustomerId}
-        //       description="Are you sure you want to cancel your appointment?"
-        //     />
-        //   )}
-        // </div>
+        // <ul className=' flex items-center align-center space-x-2'>
+        //   <li><Checkbox /> Hide</li>
+        //   <li><Checkbox /> Delete</li>
+        // </ul>
+        <button className="flex gap-1">
+            Xem chi tiết
+        </button>
       )
     },
   },

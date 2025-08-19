@@ -120,7 +120,7 @@
   }
 
   .container {
-    @apply relative flex-1 overflow-y-auto px-[5%];
+    @apply relative flex-1 px-[5%];
   }
 
   .sub-container {
