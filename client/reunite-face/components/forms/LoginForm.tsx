@@ -35,7 +35,6 @@ export const LoginForm = () => {
     console.log('IS LOADING', isLoading)
     setIsLoading(true)
     try {
-      console.log('VALUES FROM REGISTER', values)
       if (!currentPassword) {
         throw new Error('Password is required')
       }
@@ -52,14 +51,15 @@ export const LoginForm = () => {
       })
       const responseData = await res.json()
       if (!res.ok) {
-        console.log('CODE LOI',responseData)
         throw new Error(responseData.error)
       }
-      console.log('RESPONSE DATA', responseData)
       setUser(responseData.user)
-      // Redirect to home if login successfully
+      if(user?.role === 'admin'){
+        router.push('/admin')
+      } else{
+        router.push('/')
+      }
       toast.success('Login successfully')
-      router.push('/')
 
     } catch (error) {
       console.log(error)
