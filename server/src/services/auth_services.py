@@ -12,31 +12,34 @@ def hashing(s: str) -> str:
     return hashlib.sha256(s.encode()).hexdigest()
 
 class AuthService:
-    @staticmethod
-    def _build_payload(name: str, email: str, role: str) -> dict:
+    def __init__(self):
+        self.user_model = UserModel()
+    def _build_payload(user_id: str,name: str, email: str, role: str, phone:str) -> dict:
         return {
-            "sub": email,
+            "sub": user_id,
+            "email": email,
             "name": name,
             "role": role,
+            "phone":phone,
             "iat": datetime.datetime.now(datetime.timezone.utc),
             "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=Config.JWT_ACCESS_EXPIRES)
         }
 
-    @staticmethod
+  
     def _encode(payload: dict) -> str:
         return jwt.encode(payload, Config.JWT_SECRET_KEY, algorithm=Config.JWT_ALGORITHM)
 
-    @staticmethod
-    def signup(data: dict) -> dict:
+
+    def signup(self,data: dict) -> dict:
         errors = SignupSchema().validate(data)
         if errors:
             raise ValueError({"validation": errors})
 
-        if UserModel.find_user_by_email(data["email"]):
+        if self.user_model.find_by_email(email=data["email"]):
             raise ValueError("Email đã được đăng ký")
 
         role = data.get("role", "user")
-        user_id = UserModel.create_user(
+        user_id = self.user_model.create(
             name=data["name"],
             email=data["email"],
             password=data["password"], 
@@ -45,43 +48,44 @@ class AuthService:
         )
 
         payload = AuthService._build_payload(
+            user_id=user_id,
             name=data["name"],
             email=data["email"],
-            role=role
+            role=role,
+            phone=data["phone"]
         )
         token = AuthService._encode(payload)
 
         return {
-            "user_id": str(user_id),
-            "userData": { "name": data["name"], "email": data["email"], "role": role },
+            "account_id": str(user_id),
+            "userData": { "account_id": str(user_id),"name": data["name"], "email": data["email"], "role": role },
             "token": token
         }
 
-    @staticmethod
-    def login(data: dict) -> dict:
+  
+    def login(self,data: dict) -> dict:
         errors = LoginSchema().validate(data)
         if errors:
             raise ValueError({"validation": errors})
 
-        user = UserModel.find_user_by_email(data["email"])
+        user = self.user_model.find_by_email(data["email"])
         if not user:
+            print('VALUE', user)
             raise ValueError("Email or password incorrect")
 
-        if not bcrypt.checkpw(
-            data["password"].encode("utf-8"),
-            user["password"].encode("utf-8")
-        ):
-            raise ValueError("Email or password incorrect")
+        if not user or not bcrypt.checkpw(data["password"].encode(), user["password"].encode()):
+            raise ValueError("Sai email hoặc mật khẩu")
 
         name = user.get("name", "")
         email = user["email"]
+        phone = user.get("phone", "")
         role = user.get("role", "user")
 
-        payload = AuthService._build_payload(name=name, email=email, role=role)
+        payload = AuthService._build_payload(user_id=str(user["_id"]),name=name, email=email, role=role,phone=phone)
         token = AuthService._encode(payload)
 
         return {
-            "user_id": str(user["_id"]),
-            "userData": { "name": name, "email": email, "role": role },
+            "account_id": str(user["_id"]),
+            "userData": { "account_id": str(user["_id"]),"name": name, "email": email, "role": role, "phone": phone },
             "token": token
         }

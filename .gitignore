@@ -4,8 +4,8 @@ client/reunite-face/.next/
 client/reunite-face/.env
 # Python virtualenv (server)
 /server/reunite-face/
-server/.venv/
-server/env/
+server/.env/
+server/venv312/
 server/__pycache__/
 server/utils/__pycache__/
 server/**/__pycache__/

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from ..services.images import images_services
-from ..services.accounts import user_authorize
+from ..services.images_services import images_services
+from ..services.accounts_services import accounts_services
 from ..utils.exceptions import ParamError, NoImageProvide, FileType
 
 images_bp = Blueprint('images', __name__)
@@ -17,7 +17,7 @@ def allowed_file(filename):
 @images_bp.get('')
 @jwt_required()
 def get_imgs_id_with_post_id():
-    user_authorize('both')
+    accounts_services.user_authorize('both')
 
     try:
         post_id = request.args.get('post_id', type=str)
@@ -33,7 +33,7 @@ def get_imgs_id_with_post_id():
 @images_bp.get('/avatar')
 @jwt_required()
 def get_post_avatar_img():
-    user_authorize('both')
+    accounts_services.user_authorize('both')
 
     try:
         post_id = request.args.get('post_id', type=str)
@@ -50,7 +50,7 @@ def get_post_avatar_img():
 @images_bp.get('/report')
 @jwt_required()
 def report_on_images():
-    user_authorize('admin')
+    accounts_services.user_authorize('admin')
 
     return {
         'result': images_services.report()
@@ -60,7 +60,7 @@ def report_on_images():
 @images_bp.post('/upload')
 @jwt_required()
 def upload_image():
-    user_authorize('user')
+    accounts_services.user_authorize('user')
 
     try:
         post_id = request.form.get('post_id', type=str)
@@ -86,7 +86,7 @@ def upload_image():
 @images_bp.post('/upload/images')
 @jwt_required()
 def upload_images():
-    user_authorize('user')
+    accounts_services.user_authorize('user')
 
     try:
         post_id = request.form.get('post_id', type=str)
@@ -120,7 +120,7 @@ def upload_images():
 @images_bp.delete('')
 @jwt_required()
 def remove_image():
-    user_authorize('user')
+    accounts_services.user_authorize('user')
 
     try:
         img_id = request.form.get('img_id', type=str)
@@ -135,7 +135,7 @@ def remove_image():
 @images_bp.put('')
 @jwt_required()
 def update_image_avatar():
-    user_authorize('user')
+    accounts_services.user_authorize('user')
     
     try:
         img_id = request.form.get('img_id', type=str)
