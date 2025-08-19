@@ -1,4 +1,9 @@
 '''accounts'''
+class InvalidAccountState(Exception):
+    def __init__(self, account_id: str, status_code=400):
+        self.message = f'State of account {account_id} must be "active" or "disable"'
+        super().__init__(self.message)
+        self.status_code = status_code
 
 class NonExistAccount(Exception):
     def __init__(self, account_detail: str, status_code=400):

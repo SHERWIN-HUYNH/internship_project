@@ -1,4 +1,5 @@
 import bcrypt
+from datetime import datetime
 from bson.objectid import ObjectId
 from pymongo.errors import DuplicateKeyError
 from flask import current_app
@@ -33,7 +34,9 @@ class UserModel:
             "email": email,
             "password": hashed_pw,
             "phone": phone,
-            "role": role
+            "role": role,
+            "create_at": datetime.now(),
+            "update_at": datetime.now()
         }
 
         try:

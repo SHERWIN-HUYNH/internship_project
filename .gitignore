@@ -13,6 +13,7 @@ server/*.py[cod]
 server/*.egg-info/
 server/config.ini
 server/.env
+server/mongo_volume/*
 # Toàn cục
 .DS_Store
 .env

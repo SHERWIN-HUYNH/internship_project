@@ -1,10 +1,11 @@
 import bcrypt
 from bson import ObjectId
+from datetime import datetime
 from flask_jwt_extended import get_jwt_identity
 from ..models.account_model import UserModel
 from ..utils.mongo import mongo_client
 import hashlib
-from ..utils.exceptions import NonExistAccount, UnauthorizedAccount
+from ..utils.exceptions import NonExistAccount, UnauthorizedAccount, InvalidAccountState
 def hashing(input):
     assert isinstance(input, str), "Can not hash, input is not string"
     return hashlib.sha256(input.encode()).hexdigest()
@@ -14,6 +15,7 @@ class AccountService:
     """
     def __init__(self, db_client):
         self.accounts = db_client.accounts
+        self.posts = db_client.posts
 
     def create_user(self, username: str, email: str, password: str, is_admin: bool = False, phone_number: str = None):
         """Hashes the password and inserts a new user into the database."""
@@ -40,10 +42,33 @@ class AccountService:
         return account
 
 
+    def get_all_accounts(self):
+        result = {}
+        
+        for account in self.accounts.find():
+            name = account['name']
+            create_at = account['create_at']
+            update_at = account['update_at']
+
+            # get active posts
+            finding_posts_count = self.posts.count_documents({'account_id': account['_id'], 'status': 'finding'})
+            # get found posts
+            found_posts_count = self.posts.count_documents({'account_id': account['_id'], 'status': 'found'})
+
+            result[str(account['_id'])] = {
+                'name': name,
+                'create_at': create_at,
+                'update_at': update_at,
+                'finding_posts_count': finding_posts_count,
+                'found_posts_count': found_posts_count,
+            }
+
+        return result
+
+
+    def update_state_account(self, account_id, new_state):
+        if new_state not in ['active', 'disable']:
+            raise InvalidAccountState(account_id)
+        return self.accounts.update_one({'_id': ObjectId(account_id)}, {'$set': {'update_at': datetime.now(), 'state': new_state}}).modified_count
     
 accounts_services = AccountService(mongo_client)
-
-
-
-
-

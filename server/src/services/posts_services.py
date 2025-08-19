@@ -11,7 +11,7 @@ from ..utils.face import (
      img_to_embedding, get_score_of_img_to_imgs
 )
 from ..utils.exceptions import (
-    FileType, ImageIdentityError, ImageUploadFailed, NonExistPost, NonExistAccount, PersonNameExisted,
+    FileType, NonExistAccount, PersonNameExisted,
     DetectFaceError, DeletedImagesFailed
 )
 from ..models.post_model import post_model
@@ -223,6 +223,7 @@ class PostService:
                 except Exception as ex:
                     self.logger.error(f"Failed to delete S3 object {key}: {str(ex)}")
             raise e
+
     def get_all_posts(self) -> list:
         """Lấy tất cả bài post và thêm presigned URL cho ảnh."""
         try:
