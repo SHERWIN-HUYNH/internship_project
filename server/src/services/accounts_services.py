@@ -51,9 +51,9 @@ class AccountService:
             update_at = account['update_at']
 
             # get active posts
-            finding_posts_count = self.posts.count_documents({'_id': account['_id'], 'status': 'finding'})
+            finding_posts_count = self.posts.count_documents({'account_id': account['_id'], 'status': 'finding'})
             # get found posts
-            found_posts_count = self.posts.count_documents({'_id': account['_id'], 'status': 'found'})
+            found_posts_count = self.posts.count_documents({'account_id': account['_id'], 'status': 'found'})
 
             result[str(account['_id'])] = {
                 'name': name,

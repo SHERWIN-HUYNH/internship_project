@@ -11,7 +11,7 @@ from ..utils.face import (
      img_to_embedding, get_score_of_img_to_imgs
 )
 from ..utils.exceptions import (
-    FileType, ImageIdentityError, ImageUploadFailed, NonExistPost, NonExistAccount, PersonNameExisted,
+    FileType, NonExistAccount, PersonNameExisted,
     DetectFaceError, DeletedImagesFailed
 )
 from ..models.post_model import post_model
