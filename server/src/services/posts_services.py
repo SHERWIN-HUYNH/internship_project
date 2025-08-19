@@ -223,6 +223,7 @@ class PostService:
                 except Exception as ex:
                     self.logger.error(f"Failed to delete S3 object {key}: {str(ex)}")
             raise e
+
     def get_all_posts(self) -> list:
         """Lấy tất cả bài post và thêm presigned URL cho ảnh."""
         try:

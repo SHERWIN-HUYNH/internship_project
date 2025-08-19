@@ -8,6 +8,11 @@ def exceptions_register(app):
         return jsonify({"error": e.message}), e.status_code
 
 
+    @app.errorhandler(InvalidAccountState)
+    def handle_non_exist_account(e):
+        return jsonify({"error": e.message}), e.status_code
+
+
     @app.errorhandler(PersonNameExisted)
     def handle_person_name_existed(e):
         return jsonify({"error": e.message}), e.status_code
