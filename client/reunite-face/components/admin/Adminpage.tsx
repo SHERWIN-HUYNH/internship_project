@@ -4,12 +4,26 @@ import { columns } from '@/components/table/columns'
 import { DataTable } from '@/components/table/DataTable'
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useEffect } from 'react'
-import { appointments } from '@/test/dataAppointment'
+import React, { useEffect, useState } from 'react'
+import { postAdminList } from '@/test/dataPosts'
+import { PostAdmin } from '@/test/interface'
 
 const AdminPage = () => {
+  const [allPosts, setAllPosts] = useState<PostAdmin[]>(postAdminList)
   useEffect(() => {
-   
+    const fetchAllPosts = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_API_URL}/posts/admin`,{
+        method: 'GET',
+      })
+      if(res.ok){
+        const data = await res.json()
+        setAllPosts(data.posts)
+        console.log('ALL POSTS', allPosts)
+      } else{
+        console.log('ERROR WHEN CALLING API')
+      }
+    }
+    fetchAllPosts()
   }, [])
  
   return (
@@ -37,25 +51,25 @@ const AdminPage = () => {
         <section className="admin-stat">
           <StatCard
             type="appointments"
-            count={50}
+            count={5}
             label="Accounts"
             icon={'/assets/icons/appointments.svg'}
           />
           <StatCard
             type="pending"
-            count={100}
+            count={10}
             label="Posts"
             icon={'/assets/icons/pending.svg'}
           />
           <StatCard
             type="cancelled"
-            count={150}
+            count={0}
             label="Missing people found"
             icon={'/assets/icons/cancelled.svg'}
           />
           <StatCard
             type="appointments"
-            count={50}
+            count={10}
             label="Number of search"
             icon={'/assets/icons/appointments.svg'}
           />
@@ -63,7 +77,7 @@ const AdminPage = () => {
 
         <DataTable
           columns={columns}
-          data={ appointments as any }
+          data={ allPosts as any }
         />
       </main>
     </div>

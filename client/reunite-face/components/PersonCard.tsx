@@ -1,6 +1,8 @@
 import { MapPinHouse, Share2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 type PersonCardType = {
+  id: string;
   name: string;
   missing_since: string;
   age: number;
@@ -53,9 +55,9 @@ const PersonCard = (personInfor: PersonCardType) => {
             : personInfor.description }
         </p>
         <div className="flex justify-between items-center">
-          <button className="text-indigo-700 hover:text-white hover:bg-primary px-3 py-1 rounded-full font-medium text-sm">
+          <Link href={`/missingInfor/${personInfor.id}`} className="text-indigo-700 hover:text-white hover:bg-primary px-3 py-1 rounded-full font-medium text-sm">
             View Details <i className="fas fa-chevron-right ml-1"></i>
-          </button>
+          </Link>
           <button className="bg-indigo-100 hover:bg-indigo-200 text-indigo-700 px-3 py-1 rounded-full text-xs font-medium flex" >
             <p>Share</p>  <Share2 className="ml-2 w-4 h-4"/>
           </button>

@@ -22,61 +22,8 @@ const ListPeople = ({ ListPosts }: ListPeopleProps) => {
   
           {ListPosts.length == 0 ? (
             <>
-              <PersonCard
-              name="Sarah Johnson"
-              age={16}
-              gender="Female"
-              lastSeen="Seattle, WA"
-              dateMissing="Jun 15, 2023"
-              description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
-              imageUrl="/assets/images/missing_people/person1.png"
-              missing_since={"Missing since: Jun 15, 2023"} />
-              <PersonCard
-              name="Sarah Johnson"
-              age={16}
-              gender="Female"
-              lastSeen="Seattle, WA"
-              dateMissing="Jun 15, 2023"
-              description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
-              imageUrl="/assets/images/missing_people/person1.png"
-              missing_since={"Missing since: Jun 15, 2023"} />
-              <PersonCard
-              name="Sarah Johnson"
-              age={16}
-              gender="Female"
-              lastSeen="Seattle, WA"
-              dateMissing="Jun 15, 2023"
-              description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
-              imageUrl="/assets/images/missing_people/person1.png"
-              missing_since={"Missing since: Jun 15, 2023"} />
-              <PersonCard
-              name="Sarah Johnson"
-              age={16}
-              gender="Female"
-              lastSeen="Seattle, WA"
-              dateMissing="Jun 15, 2023"
-              description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
-              imageUrl="/assets/images/missing_people/person1.png"
-              missing_since={"Missing since: Jun 15, 2023"} />
-              <PersonCard
-              name="Sarah Johnson"
-              age={16}
-              gender="Female"
-              lastSeen="Seattle, WA"
-              dateMissing="Jun 15, 2023"
-              description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
-              imageUrl="/assets/images/missing_people/person1.png"
-              missing_since={"Missing since: Jun 15, 2023"} />
-              <PersonCard
-              name="Sarah Johnson"
-              age={16}
-              gender="Female"
-              lastSeen="Seattle, WA"
-              dateMissing="Jun 15, 2023"
-              description="Sarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek."
-              imageUrl="/assets/images/missing_people/person1.png"
-              missing_since={"Missing since: Jun 15, 2023"} />
-              </>
+              <p className="text-gray-600 ">No posts found</p>
+            </>
           ) :(
             ListPosts.map((post: MissingPost, index: number) => {
               const dobDate = new Date(post.dob || "");
@@ -92,10 +39,11 @@ const ListPeople = ({ ListPosts }: ListPeopleProps) => {
               ? `/api/image/${post.images.find(img => img.is_avatar)?.s3_key || post.images[0].s3_key}`
               : '/assets/images/missing_people/person1.png';
           
-              
+              console.log(imageUrl,'IMAGE URL')
 
           return (
             <PersonCard
+              id={post.id_}
               key={post.id_ || index} 
               name={post.name}
               age={age}

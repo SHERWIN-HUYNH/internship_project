@@ -54,6 +54,7 @@ export const LoginForm = () => {
         throw new Error(responseData.error)
       }
       setUser(responseData.user)
+      console.log('LODIN',user?.role)
       if(user?.role === 'admin'){
         router.push('/admin')
       } else{

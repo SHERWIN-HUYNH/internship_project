@@ -3,7 +3,12 @@ from ..utils.mongo import mongo_client
 class ImageRepository:
     def __init__(self):
         self.images = mongo_client.images
-    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "url": self.url,
+            "caption": self.caption
+        }
     def insert_one(self, image_doc: dict, session=None) -> ObjectId:
         """Insert a single image document."""
         result = self.images.insert_one(image_doc, session=session)

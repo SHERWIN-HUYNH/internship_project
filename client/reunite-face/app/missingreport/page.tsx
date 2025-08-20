@@ -3,11 +3,12 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { NextPage } from 'next';
 import { useRouter } from 'next/navigation'
 import { ArrowBigLeft } from 'lucide-react';
-import Image from 'next/image'
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Console } from 'console';
 import { useAuth } from '@/context/authContext';
+import { getCurrentDate } from '@/helper/getCurrentDate';
+import { CREATED_POST, INVALID_MISSING_SINCE } from '@/validation/messageCode/missingForm';
+import { LOGIN_REQUIRE } from '@/validation/messageCode/authentication';
 interface MissingPersonFormData {
   account_id: string;
   name: string;
@@ -15,7 +16,6 @@ interface MissingPersonFormData {
   gender: string;
   missing_since?: string;
   description?: string;
-  // distinguishing_features: string;
   relationship: string;
   address?: string;
   contact_info: string;
@@ -33,7 +33,7 @@ const MissingPersonForm: NextPage = () => {
     name: 'PERSON',
     gender: '',
     missing_since: '',
-    description: 'Last seen in ThaiLand',
+    description: 'Last seen: Seattle, WASarah was last seen at Lincoln High School. She has brown hair, blue eyes, and a small mole on her right cheek.',
     // distinguishing_features: '',
     relationship: 'PARENT',
     address: 'NEW YORK',
@@ -47,6 +47,8 @@ const MissingPersonForm: NextPage = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
   useEffect(() => {
+    const currentDate = getCurrentDate();
+    setFormData((prev) => ({ ...prev, missing_since: currentDate }));
     if (user?.account_id) {
       setFormData(prev => ({ ...prev, account_id: user.account_id! }));
     }
@@ -55,31 +57,28 @@ const MissingPersonForm: NextPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
-    // if (loading) {
-    //   return;
-    // }
-    // if (!user?.account_id) {
-    //   toast.error('Vui lòng đăng nhập hoặc đăng ký');
-    //   router.push('/login');
-    //   return;
-    // }
+    if (loading) {
+      return;
+    }
+    if (!user?.account_id) {
+      toast.error(LOGIN_REQUIRE);
+      router.push('/login');
+      return;
+    }
     if (formData.missing_since) {
     const missingDate = new Date(formData.missing_since);
-    console.log('RUN 1',formData);
     if (formData.dob) {
       const dobDate = new Date(formData.dob);
       if (isNaN(dobDate.getTime()) || isNaN(missingDate.getTime())) {
-      toast.error('Ngày sinh hoặc ngày mất tích không hợp lệ');
+      toast.error(INVALID_MISSING_SINCE);
       return;
       }
       if (missingDate <= dobDate) {
-        console.log('RUN 2')
-        toast.error('Ngày mất tích phải sau ngày sinh');
+        toast.error(INVALID_MISSING_SINCE);
       return;
     }
     }
     
-    console.log('RUN 3')
     }
     try {
       const payload = new FormData();
@@ -110,11 +109,10 @@ const MissingPersonForm: NextPage = () => {
       throw new Error(responseData.error || 'Upload failed');
     }
 
-    toast.success('Created a new post');
+    toast.success(CREATED_POST);
     router.push('/')
     } catch (error) {
       if (error instanceof Error) {
-          console.log('ERROR HAPPEN')
           toast.error(error.message)
       }
     }
@@ -226,6 +224,7 @@ const removeImage = (index: number) => {
                   name="dob"
                   value={formData.dob}
                   onChange={handleChange}
+                  max={getCurrentDate()}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
                 />
               </div>
@@ -239,6 +238,7 @@ const removeImage = (index: number) => {
                 name="missing_since"
                 value={formData.missing_since}
                 onChange={handleChange}
+                max={getCurrentDate()}
                 required
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
               />
@@ -259,17 +259,6 @@ const removeImage = (index: number) => {
             />
           </div>
 
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Distinguishing Features</label>
-            <textarea
-              name="distinguishing_features"
-              value={formData.distinguishing_features}
-              onChange={handleChange}
-              rows={3}
-              placeholder="Scars, tattoos, birthmarks, disabilities, unique mannerisms..."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-            />
-          </div> */}
 
           {/* Grid Section 2 */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

@@ -223,12 +223,12 @@ const Chart: React.FC = () => {
               </option>
             ))}
           </select>
-          <button
+          {/* <button
             onClick={handleExportReport}
             className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-md"
           >
             Xuất Báo Cáo
-          </button>
+          </button> */}
         </div>
       </div>
 
@@ -244,11 +244,11 @@ const Chart: React.FC = () => {
           </div>
         </div>
 
-        <div className="col-span-7">
+        {/* <div className="col-span-7">
           <ChartTwo />
-        </div>
+        </div> */}
 
-        <div className="col-span-5">
+        {/* <div className="col-span-5">
           <div className="overflow-x-auto bg-white rounded-lg shadow">
             <table className="min-w-full divide-y divide-slate-200">
               <thead className="bg-slate-50">
@@ -306,7 +306,7 @@ const Chart: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </div> */}
       </div>
     </>
   )
