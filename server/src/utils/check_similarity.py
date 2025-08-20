@@ -39,7 +39,7 @@ def _dob_similarity(dob1, dob2):
         d1 = datetime.strptime(dob1_str, '%Y-%m-%d')
         d2 = datetime.strptime(dob2_str, '%Y-%m-%d')
         delta = abs((d1 - d2).days)
-        return 1.0 / (1.0 + delta / 365.25)  # Example similarity score
+        return 1.0 / (1.0 + delta / 365.25) 
     except ValueError:
         return 0.0
 

@@ -9,3 +9,4 @@ export const MAX_lENGTH_PHONE = 'Số điện thoại không quá 11 chữ số'
 export const CREATE_ACCOUNT_SUCCESS = 'Tạo tài khoản thành công'
 export const CREATE_ACCOUNT_FAIL = 'Tạo tài khoản thất bại'
 export const PASSWORD_REQUIRED = 'Yêu cầu mật khẩu'
+export const LOGIN_REQUIRE = "Require login"

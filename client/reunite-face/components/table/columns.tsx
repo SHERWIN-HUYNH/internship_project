@@ -1,10 +1,13 @@
 'use client'
-import { AppointmentSchedule } from '@/test/interface'
 import { ColumnDef } from '@tanstack/react-table'
 import React from 'react'
-import { StatusBadge } from '../StatusBadge'
+
 import { Checkbox } from '../ui/checkbox'
-export const columns: ColumnDef<AppointmentSchedule>[] = [
+import { StatusSelect } from '../StatusSelect'
+import { PostAdmin } from '@/test/interface'
+import { formatDate } from '@/helper/formatDate'
+import Link from 'next/link'
+export const columns: ColumnDef<PostAdmin>[] = [
   {
     header: 'STT',
     cell: ({ row }) => {
@@ -12,14 +15,13 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
     },
   },
   {
-    accessorKey: 'patient',
+    accessorKey: 'name',
     header: 'Missing person name',
-    // enableColumnFilter: true,
     cell: ({ row }) => {
-      const appointment = row.original
-      return <p className="text-14-medium ">{appointment.profile.name}</p>
+      const posts = row.original
+      return <p className="text-14-medium ">{posts.name}</p>
     },
-    accessorFn: (row) => row.profile.name, // Extract the patient name for display and filtering
+    accessorFn: (row) => row.name, 
     filterFn: (row, columnId, filterValue) => {
       const patientName = row.getValue<string>(columnId)
       return patientName.toLowerCase().includes(filterValue.toLowerCase())
@@ -29,54 +31,55 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      const appointment = row.original
-      const status = appointment.status.toLowerCase()
+      const post = row.original
+      const status = post.status.toLowerCase()
       return (
         <div className="min-w-[115px]">
-          <StatusBadge status={status} />
+          <StatusSelect value={status} postId={''} onStatusChange={function (newStatus: string): void {
+            throw new Error('Function not implemented.')
+          } } />
         </div>
       )
     },
   },
   {
-    accessorKey: 'date',
+    accessorKey: 'created_at',
     header: 'Date created',
     cell: ({ row }) => {
-      const appointment = row.original
+      const post = row.original
       return (
         <p className="text-14-regular min-w-[100px]">
-          02/05/2003
+          {formatDate(post.create_at)}
         </p>
       )
     },
   },
   {
-    accessorKey: 'timeSlot',
+    accessorKey: 'missing_since',
     header: 'Missing since',
     cell: ({ row }) => {
-      const appointment = row.original
+      const post = row.original
       return (
         <p className="text-14-regular min-w-[100px]">
-          10:30
+          {formatDate(post.missing_since) }
         </p>
       )
     },
   },
   {
-    accessorKey: 'primaryPhysician',
+    accessorKey: 'posterName',
     header: 'Poster name',
-    // enableColumnFilter: true,
     cell: ({ row }) => {
-      const appointment = row.original
-      const doctor = appointment.doctorSchedule.doctorName
+      const posts = row.original
+      
 
       return (
         <div className="flex items-center gap-3">
-          <p className="whitespace-nowrap">Dr. {doctor?.name}</p>
+          <p className="whitespace-nowrap">{posts.author_name}</p>
         </div>
       )
     },
-    accessorFn: (row) => row.doctorSchedule.doctor?.name || '', // Extract the doctor name
+    accessorFn: (row) => row.account.name || '', 
     filterFn: (row, columnId, filterValue) => {
       const doctorName = row.getValue<string>(columnId)
       return doctorName.toLowerCase().includes(filterValue.toLowerCase())
@@ -84,18 +87,14 @@ export const columns: ColumnDef<AppointmentSchedule>[] = [
   },
   {
     id: 'actions',
-    header: () => <div className="pl-4">Hide or delete</div>,
+    header: () => <div className="pl-4">Action</div>,
     cell: ({ row }) => {
-      const appointment = row.original
+      const post = row.original
 
       return (
-        // <ul className=' flex items-center align-center space-x-2'>
-        //   <li><Checkbox /> Hide</li>
-        //   <li><Checkbox /> Delete</li>
-        // </ul>
-        <button className="flex gap-1">
-            Xem chi tiết
-        </button>
+        <Link className="flex gap-1 text-red-500" href={`/missingInfor/${post.post_id}`}>
+            Details
+        </Link>
       )
     },
   },

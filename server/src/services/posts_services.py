@@ -3,6 +3,10 @@ from datetime import datetime, timedelta
 import os
 from pathlib import Path
 from bson import ObjectId
+from pymongo import ReturnDocument
+
+from ..utils.convert import convert_to_json_serializable
+
 from ..utils.check_similarity import _dob_similarity, _gender_similarity, _img_score_from_l2, _min_l2_to_post_embeddings, _name_similarity, _weighted_score
 from ..schema.post_schema import (
     build_create_payload, build_update_payload, build_filter
@@ -11,19 +15,19 @@ from ..utils.face import (
      img_to_embedding, get_score_of_img_to_imgs
 )
 from ..utils.exceptions import (
-    FileType, ImageIdentityError, ImageUploadFailed, NonExistPost, NonExistAccount, PersonNameExisted,
+    FileType, NonExistAccount, PersonNameExisted,
     DetectFaceError, DeletedImagesFailed
 )
 from ..models.post_model import post_model
 from ..utils.s3 import s3_client
 from ..models.image_model import image_model
 from ..models.account_model import account_model
-IMG_L2_THRESHOLD = 1.6   # ngưỡng L2 cho embedding hiện tại của bạn
+IMG_L2_THRESHOLD = 1.6   
 WEIGHT_NAME   = 0.35
 WEIGHT_DOB    = 0.20
 WEIGHT_GENDER = 0.15
 WEIGHT_IMG    = 0.30
-SCORE_THRESH  = 0.60     # tống điểm tối thiểu để đức vào suspect
+SCORE_THRESH  = 0.60    
 TOPK_SUSPECTS = 10
 MAX_IMAGES    = 5
 from bson import ObjectId
@@ -31,11 +35,10 @@ from datetime import datetime
 from io import BytesIO
 import numpy as np
 import logging
-from ..utils.exceptions import NonExistAccount, DetectFaceError, ImageUploadFailed
+from ..utils.exceptions import NonExistAccount, DetectFaceError
 from ..schema.post_schema import build_create_payload
 from ..utils.check_similarity import _name_similarity, _dob_similarity, _gender_similarity, _min_l2_to_post_embeddings, _img_score_from_l2, _weighted_score
 from ..utils.s3 import s3_client
-from ..utils.mongo import mongo_client
 SCORE_THRESH = 0.5
 TOPK_SUSPECTS = 5
 import logging
@@ -235,7 +238,34 @@ class PostService:
         except Exception as e:
             self.logger.error(f"Failed to get posts with images: {str(e)}")
             raise
-
+    def get_all_posts_author(self)-> list:
+        try:
+            posts = self.posts.get_all_posts_with_author()
+            return convert_to_json_serializable(posts)
+        except Exception as e:
+            self.logger.error(f"Failed to get posts with images: {str(e)}")
+            raise
+    def get_post_by_id(self, post_id: str):
+        try:
+            post = self.posts.get_by_id_with_images(post_id)
+            return convert_to_json_serializable(post)
+        except Exception as e:
+            self.logger.error(f"Failed to get post with images: {str(e)}")
+            raise
+    def get_similar_posts(self, post_id: str) -> list:
+        """
+        Service layer to fetch related posts with error handling.
+        
+        :param post_id: The ObjectId string of the main post.
+        :return: List of related post documents.
+        :raises: Re-raises exceptions from the model with appropriate context.
+        """
+        try:
+            return convert_to_json_serializable(self.posts.get_related_posts(post_id))
+        except ValueError as ve:
+            raise ValueError(str(ve))
+        except Exception as e:
+            raise Exception(f"Service error: {str(e)}")
     def get_posts_by_ids(self, post_ids: list):
         post_ids = [ObjectId(pid) if isinstance(pid, str) else pid for pid in post_ids]
         pipeline = [
@@ -319,7 +349,7 @@ class PostService:
         if report_from == "":
             start_date = datetime.now() - timedelta(days=100)
         else:
-            # build_filter đã validate format ngày cho filter, ở đây xử lý riêng:
+
             from ..utils.validators import date_validate
             start_date = date_validate(report_from)
             if start_date is None:
@@ -349,24 +379,15 @@ class PostService:
         _ = self.get_post_by_id(post_id)
         return self.posts.update_status(post_id, "finding")
 
-    def create_post(self, new_post: dict) -> str:
-        if not self.accounts.exists_by_id(new_post["account_id"]):
-            raise NonExistAccount(new_post["account_id"])
-
-        payload = build_create_payload(new_post)
-
-        if self.posts.exists_name(payload["name"]):
-            raise PersonNameExisted(payload["name"])
-
-        doc = {
-            "account_id": ObjectId(new_post["account_id"]),  # cần import ObjectId ở đầu file
-            **payload,
-            "status": "queuing",
-            "create_at": datetime.now(),
-            "update_at": datetime.now()
-        }
-        return self.posts.insert(doc)
-
+    def update_status(self, post_id: str, new_status: str):
+        try:
+            obj_id = ObjectId(post_id)
+            result = self.posts.find_one_and_update(new_status, obj_id)
+            
+            return result
+        except Exception as e:
+            self.logger.error(f"Failed to update post status: {str(e)}")
+            raise
     def update_post(self, modified_post: dict) -> int:
         existed = self.get_post_by_id(modified_post["post_id"])
 

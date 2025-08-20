@@ -12,6 +12,7 @@ server/**/__pycache__/
 server/*.py[cod]
 server/*.egg-info/
 server/config.ini
+server/node_modules
 server/.env
 # Toàn cục
 .DS_Store

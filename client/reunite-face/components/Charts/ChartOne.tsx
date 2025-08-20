@@ -3,6 +3,7 @@ import { ApexOptions } from 'apexcharts'
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { Button } from '../ui/button'
+import { chart1, dataChart } from '@/test/dataPosts'
 
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
@@ -125,16 +126,16 @@ const ChartOne: React.FC = () => {
 
   const fetchAppointmentsData = async () => {
     try {
-      const response = await fetch(`/api/chart/chart2`)
-      const data: Array<{ year: number; month: number; totalAmount: number }> =
-        await response.json()
+      // const response = await fetch(`/api/chart/chart2`)
+      // const data: Array<{ year: number; month: number; totalAmount: number }> =
+      //   await response.json()
 
-      const formattedData: AppointmentData[] = data.map((item) => ({
+      const formattedData: AppointmentData[] = dataChart?.map((item) => ({
         year: item.year,
         month: item.month,
         price: item.totalAmount,
       }))
-
+      console.log('formattedData', formattedData)
       setAppointmentsData(formattedData)
     } catch (error) {
       console.error('Error fetching appointment data:', error)

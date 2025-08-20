@@ -2,16 +2,31 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import ClickOutside from '@/components/ClickOutside'
-import { signOut, useSession } from 'next-auth/react'
-import { BookPlus, CreditCard, LogOut, SquareUser } from 'lucide-react'
+
+import {  LogOut, SquareUser } from 'lucide-react'
 import { useAuth } from '@/context/authContext'
 const Dropdown = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false)
-   const { user, loading } = useAuth()
+   const { user, loading,setUser } = useAuth()
+  const router = useRouter();
+
    useEffect(() => {
      console.log(dropdownOpen)
    },[dropdownOpen])
+
+   const signOut = async () => {
+     const res = await fetch('/api/auth/logout', { method: 'POST' })
+     setUser({
+       name: '',
+       email: '',
+       role: '',
+       account_id: '',
+       phone: ''
+     })
+     router.push('/login')
+   }
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -51,12 +66,7 @@ const Dropdown = () => {
             </li>
           </ul>
           <button
-            onClick={() =>
-              signOut({
-                redirect: true,
-                callbackUrl: '/login',
-              })
-            }
+            onClick={signOut}
             className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:bg-slate-100 hover:text-primary dark:hover:bg-strokedark lg:text-base w-full px-6 py-2"
           >
             <LogOut className="w-5 h-5" />

@@ -22,10 +22,6 @@ import { CldImage } from 'next-cloudinary'
 
 const UpdateAccount = () => {
   const [isLoading, setIsLoading] = useState(false)
-  // const { data: session } = useSession()
-  // const [uploadedImage, setUploadedImage] = useState<string | null>(
-  //   session?.user.image ?? null,
-  // )
 
   const form = useForm<z.infer<typeof UpdateAccountValidation>>({
     resolver: zodResolver(UpdateAccountValidation),
