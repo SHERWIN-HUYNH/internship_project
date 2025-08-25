@@ -37,7 +37,7 @@ def get_similar_posts(post_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@posts_bp.patch('/<post_id>')
+@posts_bp.route('/<post_id>', methods=['PATCH'])
 def update_post_status(post_id):
     try:
         data = request.get_json()
@@ -149,7 +149,7 @@ def search():
         similar_imgs = post_service.get_similar_posts_to_img(file.filename, file.stream)
         if not similar_imgs:
             return jsonify({'posts': []}), 200
-
+        logger.info(f"Found {len(similar_imgs)} similar images")
         # Đảm bảo l2_score là float
         for x in similar_imgs:
             if isinstance(x.get('l2_score'), np.generic):
@@ -172,7 +172,7 @@ def search():
         posts.sort(key=lambda p: p['similarity_score'])
 
         clean_posts = clean_doc(posts)
-
+        logger.info(f"Cleaned {len(clean_posts)} posts")
         return jsonify({'posts': clean_posts}), 200
 
     except Exception as e:
