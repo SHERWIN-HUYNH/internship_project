@@ -1,6 +1,4 @@
 'use client'
-import MissingLayout from "@/components/Layouts/missingFormLayout"
-import { defaultConfig } from "next/dist/server/config-shared"
 import { useParams } from "next/navigation"
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
@@ -161,7 +159,7 @@ const PersonInfor = () => {
             className="!static py-8"
           >
             {relatedPosts.map((post) => (
-              <SwiperSlide key={post.id} className="h-full py-8">
+              <SwiperSlide key={post.post_id} className="h-full py-8">
                 <div className="w-[280px] h-full bg-white border border-slate-200 rounded-lg p-4 cursor-pointer shadow-lg hover:scale-105 transition-all ease-in-out flex flex-col">
                   <div className="w-full h-[200px] overflow-hidden rounded-lg flex-shrink-0">
                     <Image
@@ -197,7 +195,7 @@ const PersonInfor = () => {
                     </div>
                     <Link
                       href={{
-                        pathname: `/missingInfor/${post.id}`,
+                        pathname: `/missingInfor/${post.post_id}`,
                         
                       }}
                       // onClick={(e) => handleDoctorClick(e, post.facultyId, post.id)}
@@ -222,3 +220,7 @@ const PersonInfor = () => {
 }
 
 export default PersonInfor
+
+function setImages(arg0: (prev: any) => any[]) {
+  throw new Error("Function not implemented.")
+}

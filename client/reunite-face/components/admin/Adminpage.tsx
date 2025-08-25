@@ -7,26 +7,39 @@ import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import { postAdminList } from '@/test/dataPosts'
 import { PostAdmin } from '@/test/interface'
+import Loading from '../common/Loading'
+import { toast } from 'sonner'
 
 const AdminPage = () => {
-  const [allPosts, setAllPosts] = useState<PostAdmin[]>(postAdminList)
+  const [allPosts, setAllPosts] = useState<PostAdmin[]>([])
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    const fetchAllPosts = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_API_URL}/posts/admin`,{
-        method: 'GET',
-      })
-      if(res.ok){
-        const data = await res.json()
-        setAllPosts(data.posts)
-        console.log('ALL POSTS', allPosts)
-      } else{
-        console.log('ERROR WHEN CALLING API')
+      
+      const fetchAllPosts = async () => {
+        setIsLoading(true);
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_FLASK_API_URL}/posts/admin`,{
+          method: 'GET',
+        })
+          if(res.ok){
+          const data = await res.json()
+          setAllPosts(data.posts)
+          console.log('ALL POSTS', data)
+        }
+        } catch (error:any) {
+          toast.error(error)
+          console.log('ERROR WHEN CALLING API')
+          
+        }finally {
+        setIsLoading(false); 
       }
     }
     fetchAllPosts()
   }, [])
  
   return (
+    <>
+    {isLoading && <Loading />}
     <div className="mx-auto flex max-w-7xl flex-col space-y-14 p-4 md:p-6 2xl:p-10">
       <header className="admin-header">
         {/* <Link href="/" className="cursor-pointer">
@@ -81,6 +94,7 @@ const AdminPage = () => {
         />
       </main>
     </div>
+    </>
   )
 }
 

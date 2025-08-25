@@ -144,6 +144,7 @@ export const MainSearch = () => {
             images: post.images || [],
           }));
           postsToFilter = mappedPosts;
+          console.log(' API DATA IMAGE', mappedPosts);
           toast.success('Image search completed successfully.');
         } else {
           console.error('API error:', data);

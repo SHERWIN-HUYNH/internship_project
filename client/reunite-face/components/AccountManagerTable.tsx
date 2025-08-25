@@ -126,7 +126,7 @@ export default function AccountManagerTable() {
         header: 'Ngày tạo',
         cell: ({ row }) => format(new Date(row.original.createdDate), 'dd/MM/yyyy'),
       },
-      { accessorKey: 'lastLogin', header: 'Lần đăng nhập cuối', cell: ({ row }) => row.original.lastLogin || 'Chưa đăng nhập' },
+      // { accessorKey: 'lastLogin', header: 'Lần đăng nhập cuối', cell: ({ row }) => row.original.lastLogin || 'Chưa đăng nhập' },
       { accessorKey: 'status', header: 'Trạng thái' },
       {
         id: 'actions',
