@@ -331,14 +331,14 @@ class PostService:
     def get_posts_by_account_id(self, account_id: str):
         return self.posts.get_ids_by_account_id(account_id)
 
-    def get_similar_posts_to_img(self, file_name: str, stream: BytesIO, threshold: float = 1.3):
+    def get_similar_posts_to_img(self, file_name: str, stream: BytesIO, threshold: float = 1.0):
         img = img_to_embedding(stream)
         if img is None:
             raise DetectFaceError(file_name)
         imgs = self.images.embeddings_for_active_posts()
         imgs_score = get_score_of_img_to_imgs(img, imgs)
         filtered = [i for i in imgs_score if i["l2_score"] <= threshold]
-        logger.info(f"Filtered images: {len(filtered)}, scores: {[i['l2_score'] for i in filtered]}")
+        # logger.info(f"Filtered images: {len(filtered)}, scores: {[i['l2_score'] for i in filtered]}")
         return filtered
 
     def get_filter_posts(self, filter_data: dict):
