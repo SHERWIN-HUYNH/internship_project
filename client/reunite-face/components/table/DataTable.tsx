@@ -56,10 +56,10 @@ export function DataTable<TData, TValue>({
       <div className="table-header flex items-center justify-between mb-3">
         <div className="">
           <Input
-            placeholder="Search by missing people name..."
-            value={table.getColumn('patient')?.getFilterValue() as string}
+            placeholder="Missing people name..."
+            value={table.getColumn('name')?.getFilterValue() as string}
             onChange={(event) =>
-              table.getColumn('patient')?.setFilterValue(event.target.value)
+              table.getColumn('name')?.setFilterValue(event.target.value)
             }
             className="max-w-sm rounded-2xl"
           />
@@ -68,12 +68,12 @@ export function DataTable<TData, TValue>({
           <div>
             <Input
               placeholder="Search by posters..."
-              value={table.getColumn('primaryPhysician')?.getFilterValue() as string}
+              value={table.getColumn('poster')?.getFilterValue() as string}
               onChange={(event) => {
                 console.log(
-                  table.getColumn('primaryPhysician')?.setFilterValue(event.target.value),
+                  table.getColumn('poster')?.setFilterValue(event.target.value),
                 )
-                table.getColumn('primaryPhysician')?.setFilterValue(event.target.value)
+                table.getColumn('poster')?.setFilterValue(event.target.value)
               }}
               className="max-w-sm rounded-2xl"
               
@@ -92,8 +92,10 @@ export function DataTable<TData, TValue>({
               className="p-2 border rounded-2xl"
             >
               <option value="">All</option>
-              <option value="Finding">Finding</option>
-              <option value="Found">Found</option>
+              <option value="pending">Pending</option>
+              <option value="finding">Finding</option>
+              <option value="found">Found</option>
+              <option value="disable">Disable</option>
               
             </select>
           </div>
@@ -138,7 +140,6 @@ export function DataTable<TData, TValue>({
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
                 {NOT_FOUND}
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Totam non inventore perferendis, tenetur ab eos nihil recusandae in suscipit unde!
               </TableCell>
             </TableRow>
           )}

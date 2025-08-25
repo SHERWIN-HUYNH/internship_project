@@ -26,9 +26,7 @@ export async function middleware(req: NextRequest) {
 
   // Get access token from cookies
   const accessToken = req.cookies.get('access_token')?.value
-  console.log('MIDDLEWARE ACCESS TOKEN', accessToken)
   if (!accessToken) {
-    console.log('NO ACCESS TOKEN')
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
@@ -36,7 +34,6 @@ export async function middleware(req: NextRequest) {
     const secret = new TextEncoder().encode(process.env.JWT_SECRET_KEY!)
     const { payload } = await jwtVerify(accessToken, secret)
     const role = payload.role // Access role directly from payload
-    console.log('MIDDLEWARE ROLE', role)
 
     // Check if the role exists and the path is allowed
     const allowedPaths = RESTRICTED_PATHS[role as string] || []
@@ -47,13 +44,11 @@ export async function middleware(req: NextRequest) {
     )
 
     if (!role || !isAllowed) {
-      console.log('UNAUTHORIZED ACCESS: Invalid role or path')
       return NextResponse.redirect(new URL('/login', req.url))
     }
 
     return NextResponse.next()
   } catch (err) {
-    console.error('Token invalid or expired:', err)
     return NextResponse.redirect(new URL('/login', req.url))
   }
 }

@@ -4,6 +4,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import clsx from "clsx";
 import { useState } from "react";
 import Image from "next/image";
+import { toast } from "sonner";
+import Loading from "./common/Loading";
 interface StatusSelectProps {
   value: string;
   postId: string;
@@ -14,12 +16,15 @@ export const StatusSelect = ({ value, postId, onStatusChange }: StatusSelectProp
   const [selectedStatus, setSelectedStatus] = useState(value);
   const [openConfirm, setOpenConfirm] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState(false);
   // Hàm gọi API để cập nhật trạng thái
   const updateStatus = async (newStatus: string) => {
+    setIsLoading(true);
     try {
       console.log('API CALL')
-      const response = await fetch(`/api/posts/${postId}`, {
+      console.log('NEW STATUS', newStatus)
+      console.log('POST ID', postId)
+      const response = await fetch(`${process.env.NEXT_PUBLIC_FLASK_API_URL}/posts/${postId}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -27,15 +32,21 @@ export const StatusSelect = ({ value, postId, onStatusChange }: StatusSelectProp
         body: JSON.stringify({ status: newStatus }),
       });
       if (!response.ok) {
-        throw new Error('Failed to update status');
+       const errorData = await response.json(); // Lấy nội dung lỗi từ server
+       console.log('Error response:', errorData);
+       throw new Error(`Failed to update status: ${response.status} - ${errorData.error || 'Unknown error'}`);
       }
+      
       const result = await response.json();
       console.log('Status updated:', result);
+      toast.success('Status updated successfully');
       setSelectedStatus(newStatus); 
       onStatusChange(newStatus); 
+
     } catch (error) {
       console.error('Error updating status:', error);
-      alert('Failed to update status. Please try again.');
+    }finally {
+      setIsLoading(false); 
     }
   };
 
@@ -63,6 +74,8 @@ export const StatusSelect = ({ value, postId, onStatusChange }: StatusSelectProp
 
   return (
     <>
+    {isLoading && <Loading />}
+    <div>
       <Select value={selectedStatus} onValueChange={handleStatusChange} >
         <SelectTrigger
           className={clsx('status-badge')}
@@ -101,6 +114,8 @@ export const StatusSelect = ({ value, postId, onStatusChange }: StatusSelectProp
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+    </div>
+      
     </>
   );
 };

@@ -35,11 +35,18 @@ export const columns: ColumnDef<PostAdmin>[] = [
       const status = post.status.toLowerCase()
       return (
         <div className="min-w-[115px]">
-          <StatusSelect value={status} postId={''} onStatusChange={function (newStatus: string): void {
-            throw new Error('Function not implemented.')
-          } } />
+          <StatusSelect value={status} postId={post.post_id} onStatusChange={(newStatus: string) => {
+           
+            console.log('New status selected:', newStatus);
+          }} />
         </div>
       )
+    },
+    filterFn: (row, columnId, filterValue) => {
+      if (!filterValue) return true;
+      const status = row.getValue<string>(columnId);
+      console.log('FILTERING WORKING', status, filterValue)
+      return status.toLowerCase() === filterValue.toLowerCase();
     },
   },
   {
@@ -67,7 +74,7 @@ export const columns: ColumnDef<PostAdmin>[] = [
     },
   },
   {
-    accessorKey: 'posterName',
+    accessorKey: 'poster',
     header: 'Poster name',
     cell: ({ row }) => {
       const posts = row.original
@@ -79,10 +86,10 @@ export const columns: ColumnDef<PostAdmin>[] = [
         </div>
       )
     },
-    accessorFn: (row) => row.account.name || '', 
+    accessorFn: (row) => row.author_name, 
     filterFn: (row, columnId, filterValue) => {
-      const doctorName = row.getValue<string>(columnId)
-      return doctorName.toLowerCase().includes(filterValue.toLowerCase())
+      const authorName = row.getValue<string>(columnId)
+      return authorName.toLowerCase().includes(filterValue.toLowerCase())
     },
   },
   {
